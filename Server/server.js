@@ -1,10 +1,12 @@
 var port = 80;
 
-var http = require( 'http' ),
-    mkdirp = require('mkdirp'),
-    winston = require('winston'),
-    gateway = require( './gateway.js' );
+var mkdirp = require('mkdirp');
+var winston = require('winston');
+var bodyParser = require('body-parser');
+var express = require('express');
     
+var app = express();
+
 mkdirp('./logs', function(err) { 
 
 
@@ -16,36 +18,15 @@ process.on('uncaughtException', function(err) {
   winston.error(err.message);
 });
 
-var server = http.createServer(function (request,response) {
 
-    var data = "";
-    
-    request.on( 'data' , function( postData ) { data += postData; } );
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-    request.on( 'end' , function () {
-    
-        response.writeHead(200, { 'Content-Type': 'application/json;charset=utf-8' } )
-        
-        gateway( request.url , function( err,result ) {
-        
-            if( !result )
-            {
-                if( result == undefined )
-                    var result = {};
-                
-                result.status = 0;
-                if( err == null )
-                    result.errorMessage = "SERVER_UNKNOWN_ERROR";
-                else
-                    result.errorMessage = err;
-                result.result = {};
-            }
-            
-            response.end( JSON.stringify( result ) );
-        });
-    });
-    
-}).listen(port);
+//----- api route list ----- //
+app.get('/rainbow/join', require( './routes/rainbow/join.js' ) );
+app.post('/rainbow/join', require( './routes/rainbow/join.js' ) );
+//----- api route list ----- //
 
-
-console.log( "server start" );
+app.listen(port, function () {
+  console.log('server start');
+});
