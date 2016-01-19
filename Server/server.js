@@ -25,6 +25,15 @@ app.use(bodyParser.json());
 //----- api route list ----- //
 app.get('/rainbow/join', require( './routes/rainbow/join.js' ) );
 app.post('/rainbow/join', require( './routes/rainbow/join.js' ) );
+
+app.get('/rainbow/login', require( './routes/rainbow/login.js' ) );
+app.post('/rainbow/login', require( './routes/rainbow/login.js' ) );
+
+app.get('/rainbow/show_group', require( './routes/rainbow/show_group.js' ) );
+app.post('/rainbow/show_group', require( './routes/rainbow/show_group.js' ) );
+
+app.get('/rainbow/create_group', require( './routes/rainbow/create_group.js' ) );
+app.post('/rainbow/create_group', require( './routes/rainbow/create_group.js' ) );
 //----- api route list ----- //
 
 app.listen(port, function () {
