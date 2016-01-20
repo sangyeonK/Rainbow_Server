@@ -1,3 +1,4 @@
+var step = require('step');
 var logger = require( '../../common/logger.js' );
 var mysql = require( '../../common/mysql.js' );
 var responsor = require('../../common/responsor.js');
@@ -14,43 +15,38 @@ module.exports = function(req, res) {
     
     if( params == undefined || params == false )
     {
-        res.send( responsor( 0, "BAD_REQUEST", {} ) );
-        return;
+        return responsor( new Error("BAD_REQUEST") , res , {} );
     }
     
-    mysql.getConnection(function( err, connection) {
-        var query = 'select UserSN from Account where UserID=' + mysql.escape(params.user_id);
-        connection.query(query, function(err, rows, fields) {
-            if (err)
-            {
-                logger.error(err.message);
-                res.send( responsor(0,"DATABASE_ERROR",{}) );
-                connection.release();
-                return;
-            }
-            if(rows.length > 0 )
-            {
-                res.send( responsor(0,"ALREADY_EXIST_ID",{}) );
-                connection.release();
-                return;
-            }
+    var connection, result = {};
+    step(
+        function () {
+            mysql.getConnection( this );
+        },
+        function (err, conn) {
+            if( err ) throw err;
             
-            query = 'insert into Account (`UserID`, `Password` ) values ( ' + mysql.escape(params.user_id) + ', ' + mysql.escape(params.password) + ')';
-            connection.query(query, function(err, rows, fields) {
-                if (err)
-                {
-                    logger.error(err.message);
-                    res.send( responsor(0,"DATABASE_ERROR",{}) );
-                    connection.release();
-                    return;
-                }
-                
-                res.send( responsor(1,"",{}) );
+            connection = conn;
+            
+            var query = 'select UserSN from Account where UserID=' + mysql.escape(params.user_id);
+            
+            connection.query( query , this );
+        },
+        function ( err, rows, fields ) {
+            if( err ) throw err;
+            
+            if( rows.length > 0 ) throw new Error("ALREADY_EXIST_ID");
+            
+            var query = 'insert into Account (`UserID`, `Password` ) values ( ' + mysql.escape(params.user_id) + ', ' + mysql.escape(params.password) + ')';
+            connection.query(query, this );
+        },
+        function ( err, contents )
+        {
+            responsor( err, res, result );
+            if(connection)
                 connection.release();
-                return;
-            });
-        });
-        
-
-    });
+            
+            return null;
+        }
+    );
 };

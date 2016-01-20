@@ -32,7 +32,7 @@ module.exports = function(req, res) {
         return;
     }
     
-    mysql.getConnection(function( err, connection) {
+    mysql.getConnection(res,function( err, connection) {
         var query = 'select GroupSN from `Account` where UserSN=' + session.user_sn;
         connection.query(query, function(err, rows, fields) {
             if (err)
