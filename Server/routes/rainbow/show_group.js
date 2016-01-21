@@ -81,7 +81,7 @@ module.exports = function(req, res) {
             
             for(var i = 0 ; i < rows[0].length ; i++ )
             {
-                result.invite.push({idx:rows[0][i].Idx, userID:rows[0][i].UserID, groupID:rows[0][i].GrouopSN});
+                result.invite.push({idx:rows[0][i].Idx, userID:rows[0][i].UserID, groupSN:rows[0][i].GrouopSN});
             }
             
             return null;
