@@ -23,9 +23,9 @@ module.exports = function(req, res) {
     }
     
     if(req.method == "GET")
-        params = util.checkParameter( [] , req.query );
+        params = util.checkParameter( ["group_sn","invited_user_id"] , req.query );
     else if(req.method == "POST")
-        params = util.checkParameter( [] , req.body );
+        params = util.checkParameter( ["group_sn","invited_user_id"] , req.body );
     
     if( params == undefined || params == false )
     {
@@ -45,7 +45,7 @@ module.exports = function(req, res) {
             
             connection = conn;
             
-            var query = 'call spShowGroups(' + session.user_sn +')';
+            var query = 'call spInviteGroup(' + session.user_sn + ',' + params.group_sn + ', ' + params.invited_user_id + ')';
             
             connection.query( query , this );
         },
@@ -53,37 +53,12 @@ module.exports = function(req, res) {
         {
             if( err ) throw err;
             
-            if( rows[0].length == 0 || rows[0][0].$result == -1 ) throw new Error("INVALID_ACCOUNT");
-            
-            var userIDs = [];
-            if( rows[0][0].$ownerID != null )
-                userIDs.push( rows[0][0].$ownerID );
-            if( rows[0][0].$partnerID != null)
-                userIDs.push( rows[0][0].$partnerID );
-            
-            result.group = { sn:rows[0][0].$groupSN , member:userIDs, active:rows[0][0].$active};
-            
-            return null;
-        },
-        function(err, contents)
-        {
-            if( err ) throw err;
-            
-            var query = 'call spShowGroupInvite(' + session.user_sn +')';
-            
-            connection.query( query , this );
-        },
-        function(err, rows, fields)
-        {
-            if( err ) throw err;
-            
-            result.invite = [];
-            
-            for(var i = 0 ; i < rows[0].length ; i++ )
-            {
-                result.invite.push({idx:rows[0][i].Idx, userID:rows[0][i].UserID, groupID:rows[0][i].GrouopSN});
-            }
-            
+            if( rows[0][0].$result == -1 ) throw new Error("INVALID_ACCOUNT");
+            else if( rows[0][0].$result == -2 ) throw new Error("INVALID_GROUP");
+            else if( rows[0][0].$result == -3 ) throw new Error("ALREADY_IN_THE_GROUP");
+            else if( rows[0][0].$result == -4 ) throw new Error("ALREADY_IN_THE_GROUP");
+            else if( rows[0][0].$result != 1 ) throw new Error("GENERAL_ERROR");
+                        
             return null;
         },
         function ( err, contents )

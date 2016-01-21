@@ -34,6 +34,15 @@ app.post('/rainbow/show_group', require( './routes/rainbow/show_group.js' ) );
 
 app.get('/rainbow/create_group', require( './routes/rainbow/create_group.js' ) );
 app.post('/rainbow/create_group', require( './routes/rainbow/create_group.js' ) );
+
+app.get('/rainbow/invite_group', require( './routes/rainbow/invite_group.js' ) );
+app.post('/rainbow/invite_group', require( './routes/rainbow/invite_group.js' ) );
+
+app.get('/rainbow/accept_group', require( './routes/rainbow/accept_group.js' ) );
+app.post('/rainbow/accept_group', require( './routes/rainbow/accept_group.js' ) );
+
+app.get('/rainbow/reject_group', require( './routes/rainbow/reject_group.js' ) );
+app.post('/rainbow/reject_group', require( './routes/rainbow/reject_group.js' ) );
 //----- api route list ----- //
 
 app.listen(port, function () {

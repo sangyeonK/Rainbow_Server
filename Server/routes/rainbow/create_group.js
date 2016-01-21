@@ -1,3 +1,4 @@
+var step = require('step');
 var logger = require( '../../common/logger.js' );
 var mysql = require( '../../common/mysql.js' );
 var responsor = require('../../common/responsor.js');
@@ -32,54 +33,47 @@ module.exports = function(req, res) {
         return;
     }
     
-    mysql.getConnection(res,function( err, connection) {
-        var query = 'select GroupSN from `Account` where UserSN=' + session.user_sn;
-        connection.query(query, function(err, rows, fields) {
-            if (err)
-            {
-                logger.error(err.message);
-                res.send( responsor(0,"DATABASE_ERROR",{}) );
-                connection.release();
-                return;
-            }
-            if(rows.length == 0 )
-            {
-                res.send( responsor(0,"INVALID_ACCOUNT",{}) );
-                connection.release();
-                return;
-            }
-            var groupSN = rows[0].GroupSN;
-            if( groupSN != 0 )
-            {
-                res.send( responsor(0,"ALREADY_BELONG_GROUP",{}) );
-                connection.release();
-                return;                
-            }
+    var connection, result = {};
+    step(
+        function () 
+        {
+            mysql.getConnection( this );
+        },
+        function (err, conn) 
+        {
+            if( err ) throw err;
             
-            query = 'insert into `Group` (`CreateTimestamp`,`OwnerSN`) values ( ' + util.getUnixTime() + ', ' + session.user_sn + ')';
-            connection.query(query, function(err, rows,fields) {
-                if (err)
-                {
-                    logger.error(err.message);
-                    res.send( responsor(0,"DATABASE_ERROR",{}) );
-                    connection.release();
-                    return;
-                }
-                var groupSN = rows.insertId;
-                query = 'update `Account` set `GroupSN` = '+ groupSN + ' where `UserSN` = ' + session.user_sn;
-                connection.query(query, function(err, rows, fields) {
-                    if (err)
-                    {
-                        logger.error(err.message);
-                        res.send( responsor(0,"DATABASE_ERROR",{}) );
-                        connection.release();
-                        return;
-                    }
-                    res.send( responsor( 1, "", { group:{id:groupSN,member:[session.user_id],active:0} } ) );
-                    connection.release();
-                    return;
-                });
-            });
-        });
-    });
+            connection = conn;
+            
+            var query = 'call spCreateGroup(' + session.user_sn +')';
+            
+            connection.query( query , this );
+        },
+        function(err, rows, fields)
+        {
+            if( err ) throw err;
+            
+            if( rows[0].length == 0 || rows[0][0].$result == -1 ) throw new Error("INVALID_ACCOUNT");
+            else if( rows[0][0].$result == -2 ) throw new Error("ALREADY_IN_THE_GROUP");
+            else if( rows[0][0].$result != 1) throw new Error("GENERAL_ERROR");
+            
+            var userIDs = [];
+            if( rows[0][0].$ownerID != null )
+                userIDs.push( rows[0][0].$ownerID );
+            if( rows[0][0].$partnerID != null)
+                userIDs.push( rows[0][0].$partnerID );
+            
+            result.group = { sn:rows[0][0].$groupSN , member:userIDs, active:rows[0][0].$active};
+            
+            return null;
+        },
+        function ( err, contents )
+        {
+            responsor( err, res, result );
+            if(connection)
+                connection.release();
+            
+            return null;
+        }
+    );
 };

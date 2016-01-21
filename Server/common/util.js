@@ -1,3 +1,4 @@
+var mysql = require( './mysql.js' );
 
 module.exports.checkParameter = function( params , request_body) {
 
@@ -12,6 +13,7 @@ module.exports.checkParameter = function( params , request_body) {
         {
             return false;
         }
+        request_body[ params[i] ] = mysql.escape( request_body[ params[i] ] );
     }
     return request_body;
 };

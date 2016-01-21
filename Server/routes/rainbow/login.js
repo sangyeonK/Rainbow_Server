@@ -48,22 +48,22 @@ module.exports = function(req, res) {
             connection = conn;
             
             if( isAutoLogin )
-                var query = 'select UserID,UserSN,GroupSN from Account where UserSN=' + mysql.escape(session.user_sn);
+                var query = 'call spGetUserAccount('+ session.user_sn +', "", "")';
             else
-                var query = 'select UserID,UserSN,GroupSN from Account where UserID=' + mysql.escape(params.user_id) + ' and Password=' + mysql.escape(params.password);
+                var query = 'call spGetUserAccount(0, '+ params.user_id +', '+ params.password +')';
             
             connection.query( query , this );
         },
         function ( err, rows, fields ) 
         {
             if( err ) throw err;
+
+            if( rows[0].length == 0 ) throw new Error("INVALID_ID_PASSWORD");
             
-            if( rows.length == 0 ) throw new Error("INVALID_ID_PASSWORD");
-            
-            result.rs = auth.encrypt({user_id:rows[0].UserID, user_sn:rows[0].UserSN});
+            result.rs = auth.encrypt({user_id:rows[0][0].UserID, user_sn:rows[0][0].UserSN});
             return null;
         },
-        function( err, contexts )
+        function ( err )
         {
             responsor( err, res, result );
             if(connection)

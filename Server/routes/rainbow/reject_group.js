@@ -3,42 +3,59 @@ var logger = require( '../../common/logger.js' );
 var mysql = require( '../../common/mysql.js' );
 var responsor = require('../../common/responsor.js');
 var util = require('../../common/util.js');
+var auth = require('../../common/auth.js');
 
 module.exports = function(req, res) {
 
-    var params;
+    var params, session;
+
+    if(req.headers['rs'] == undefined )
+    {
+        responsor( new Error("INVALID_SESSION") , res , {} );
+        return;
+    }
+    
+    var session = auth.decrypt(req.headers['rs']);
+    if(session == undefined)
+    {
+        responsor( new Error("INVALID_SESSION") , res , {} );
+        return;
+    }
     
     if(req.method == "GET")
-        params = util.checkParameter( ['user_id','password'] , req.query );
+        params = util.checkParameter( ["group_invite_idx"] , req.query );
     else if(req.method == "POST")
-        params = util.checkParameter( ['user_id','password'] , req.body );
+        params = util.checkParameter( ["group_invite_idx"] , req.body );
     
     if( params == undefined || params == false )
     {
-        return responsor( new Error("BAD_REQUEST") , res , {} );
+        responsor( new Error("BAD_REQUEST") , res , {} );
+        return;
     }
     
     var connection, result = {};
     step(
-        function () {
+        function () 
+        {
             mysql.getConnection( this );
         },
-        function (err, conn) {
+        function (err, conn) 
+        {
             if( err ) throw err;
             
             connection = conn;
             
-            var query = 'CALL spJoin(' + params.user_id + ', ' + params.password + ' )';
+            var query = 'call spRejectGroupInvite(' + session.user_sn + ',' + params.group_invite_idx + ')';
             
             connection.query( query , this );
         },
-        function ( err, rows, fields )
+        function(err, rows, fields)
         {
-            if( rows[0][0].result == -1 ) throw new Error("ALREADY_EXIST_ID");
+            if( err ) throw err;
             
             return null;
         },
-        function ( err )
+        function ( err, contents )
         {
             responsor( err, res, result );
             if(connection)
@@ -46,6 +63,5 @@ module.exports = function(req, res) {
             
             return null;
         }
-        
     );
 };
