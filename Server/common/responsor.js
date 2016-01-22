@@ -1,8 +1,8 @@
 var logger = require( './logger.js' );
-
-function makeResponse( status, errorMessage, result )
+var util = require( './util.js' );
+function makeResponse( errorCode, errorMessage, result )
 {
-    return { status : status , 
+    return { errorCode : errorCode , 
              errorMessage : errorMessage ,
              result : result };    
 };
@@ -11,18 +11,18 @@ module.exports = function( err, res, result )
 {
     if( err )
     {
-        logger.error("["+ res.req.url + "]\n" + ( res.req.headers.rs !== undefined ? res.req.headers.rs : "" ) + "\n" + JSON.stringify(res.req.body) + "\n" + err.message);
         if( err.sqlState )
         {
-            res.send( makeResponse(0,"DATABASE_ERROR",{}) );
+            res.send( makeResponse(util.getErrorCode("DATABASE_ERROR"),"DATABASE_ERROR",{}) );
         }
         else
         {
-            res.send( makeResponse(0,err.message,{}) );
+            res.send( makeResponse(util.getErrorCode(err.message),err.message,{}) );
         }
+        logger.error("["+ res.req.url + "]\n" + ( res.req.headers.rs !== undefined ? res.req.headers.rs : "" ) + "\n" + JSON.stringify(res.req.body) + "\n" + ( err.sqlState !== undefined ? "1" : util.getErrorCode(err.message) ) + ' ' + err.message);
     }
     else
     {
-        res.send( makeResponse(1,"",result) );
+        res.send( makeResponse(0,"",result) );
     }
 };

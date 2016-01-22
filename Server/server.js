@@ -15,7 +15,7 @@ mkdirp('./logs', function(err) {
 winston.add(winston.transports.File , {"filename": "./logs/exceptions.log" } );
 
 process.on('uncaughtException', function(err) {
-  winston.error(err.message);
+  winston.error(err);
 });
 
 
