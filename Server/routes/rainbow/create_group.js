@@ -11,15 +11,13 @@ module.exports = function(req, res) {
 
     if(req.headers['rs'] == undefined )
     {
-        res.send( responsor(0,"INVALID_SESSION",{}) );
-        return;
+        return responsor( new Error("INVALID_SESSION") , res , {} );
     }
     
     var session = auth.decrypt(req.headers['rs']);
     if(session == undefined)
     {
-        res.send( responsor(0,"INVALID_SESSION",{}) );
-        return;
+        return responsor( new Error("INVALID_SESSION") , res , {} );
     }
     
     if(req.method == "GET")
@@ -29,8 +27,7 @@ module.exports = function(req, res) {
     
     if( params == undefined || params == false )
     {
-        res.send( responsor( 0, "BAD_REQUEST", {} ) );
-        return;
+        return responsor( new Error("BAD_REQUEST") , res , {} );
     }
     
     var connection, result = {};
@@ -69,11 +66,10 @@ module.exports = function(req, res) {
         },
         function ( err, contents )
         {
-            responsor( err, res, result );
             if(connection)
                 connection.release();
             
-            return null;
+            return responsor( err, res, result );
         }
     );
 };

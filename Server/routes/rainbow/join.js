@@ -42,11 +42,10 @@ module.exports = function(req, res) {
         },
         function ( err )
         {
-            responsor( err, res, result );
             if(connection)
                 connection.release();
             
-            return null;
+            return responsor( err, res, result );
         }
         
     );
