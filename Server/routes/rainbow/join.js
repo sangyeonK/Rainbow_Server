@@ -34,6 +34,8 @@ module.exports = function(req, res) {
         },
         function ( err, rows, fields )
         {
+            if( err ) throw err;
+            
             if( rows[0][0].result == -1 ) throw new Error("ALREADY_EXIST_ID");
             
             return null;
