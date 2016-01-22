@@ -55,7 +55,7 @@ module.exports = function(req, res) {
             
             if( rows[0][0].$result == -1 ) throw new Error("INVALID_ACCOUNT");
             else if( rows[0][0].$result == -2 ) throw new Error("INVALID_GROUP");
-            else if( rows[0][0].$result == -3 ) throw new Error("ALREADY_IN_THE_GROUP");
+            else if( rows[0][0].$result == -3 ) throw new Error("INVALID_ACCOUNT");
             else if( rows[0][0].$result == -4 ) throw new Error("ALREADY_IN_THE_GROUP");
             else if( rows[0][0].$result != 1 ) throw new Error("GENERAL_ERROR");
                         
