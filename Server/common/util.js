@@ -14,6 +14,9 @@ var errorCodeList =
     "GENERAL_ERROR" : 99            //기타 일반적인 오류
 };
 
+var inviteCodeAlphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+var inviteCodeLength = 16;
+
 module.exports.checkParameter = function( params , request_body) {
 
     if( params.length != this.objectSize(request_body) )
@@ -54,5 +57,16 @@ module.exports.getErrorCode = function(message) {
         return 99;
     else 
         return code;
+};
+
+module.exports.generateInviteCode = function()
+{
+    var result = '';
+    for(var i = 0 ; i < inviteCodeLength ; i++)
+    {
+        result += inviteCodeAlphabet.charAt(Math.floor(Math.random() * inviteCodeAlphabet.length));
+    }
+    
+    return result;
 };
 
