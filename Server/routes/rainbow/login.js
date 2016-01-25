@@ -60,12 +60,17 @@ module.exports = function(req, res) {
 
             if( rows[0].length == 0 ) throw new Error("INVALID_ID_PASSWORD");
             
-            result.rs = auth.encrypt({user_id:rows[0][0].UserID, user_sn:rows[0][0].UserSN});
-            result.user_id = rows[0][0].UserID;
-            result.user_name = rows[0][0].UserName;
-            result.group_sn = rows[0][0].GroupSN;
-            result.group_invite_code = ( rows[0][0].InviteCode !== null ? rows[0][0].InviteCode : "" );
-            result.group_active =  ( rows[0][0].Active !== null ? rows[0][0].Active : "" );
+            var userNames = [];
+            if( rows[0][0].$ownerName != null )
+                userNames.push( rows[0][0].$ownerName );
+            if( rows[0][0].$partnerName != null)
+                userNames.push( rows[0][0].$partnerName );
+            
+            result.rs = auth.encrypt({user_id:rows[0][0].$userID, user_sn:rows[0][0].$userSN});
+            result.user_id = rows[0][0].$userID;
+            result.user_name = rows[0][0].$userName;
+            result.group = { sn:rows[0][0].$groupSN , member:userNames, inviteCode:rows[0][0].$inviteCode, active:rows[0][0].$active};
+            
             return null;
         },
         function ( err )
