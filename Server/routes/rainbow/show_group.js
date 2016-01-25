@@ -52,13 +52,13 @@ module.exports = function(req, res) {
             
             if( rows[0].length == 0 || rows[0][0].$result == -1 ) throw new Error("INVALID_ACCOUNT");
             
-            var userIDs = [];
-            if( rows[0][0].$ownerID != null )
-                userIDs.push( rows[0][0].$ownerID );
-            if( rows[0][0].$partnerID != null)
-                userIDs.push( rows[0][0].$partnerID );
+            var userNames = [];
+            if( rows[0][0].$ownerName != null )
+                userNames.push( rows[0][0].$ownerName );
+            if( rows[0][0].$partnerName != null)
+                userNames.push( rows[0][0].$partnerName );
             
-            result.group = { sn:rows[0][0].$groupSN , member:userIDs, active:rows[0][0].$active};
+            result.group = { sn:rows[0][0].$groupSN , member:userNames, active:rows[0][0].$active};
             
             return null;
         },

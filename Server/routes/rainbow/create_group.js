@@ -3,34 +3,33 @@ var logger = require( '../../common/logger.js' );
 var mysql = require( '../../common/mysql.js' );
 var responsor = require('../../common/responsor.js');
 var util = require('../../common/util.js');
-var auth = require('../../common/auth.js');
 
 module.exports = function(req, res) {
 
-    var params, session;
+    var reqAnalysis = util.checkRequest( req, [] );
+    
+    if( reqAnalysis.err !== undefined )
+        return responsor( reqAnalysis.err, res, {} );
+    
+    var params = reqAnalysis.params, session = reqAnalysis.session, connection, result = {};
+    
+    function createGroupHandler(err,rows,fields) {
+        if( err ) throw err;
+        
+        if( rows[0].length == 0 || rows[0][0].$result == -1 ) throw new Error("INVALID_ACCOUNT");
+        else if( rows[0][0].$result == -2 ) throw new Error("ALREADY_IN_THE_GROUP");
+        else if( rows[0][0].$result == -3 )
+        {
+            var query = 'call spCreateGroup(' + session.user_sn +', '+ mysql.escape( util.generateInviteCode() ) + ')';
+            console.log(query);
+            connection.query( query , this );
+            return;
+        }
+        else if( rows[0][0].$result != 1) throw new Error("GENERAL_ERROR");
 
-    if(req.headers['rs'] == undefined )
-    {
-        return responsor( new Error("INVALID_SESSION") , res , {} );
+        return rows;
     }
     
-    var session = auth.decrypt(req.headers['rs']);
-    if(session == undefined)
-    {
-        return responsor( new Error("INVALID_SESSION") , res , {} );
-    }
-    
-    if(req.method == "GET")
-        params = util.checkParameter( [] , req.query );
-    else if(req.method == "POST")
-        params = util.checkParameter( [] , req.body );
-    
-    if( params == undefined || params == false )
-    {
-        return responsor( new Error("BAD_REQUEST") , res , {} );
-    }
-    
-    var connection, result = {};
     step(
         function () 
         {
@@ -41,26 +40,29 @@ module.exports = function(req, res) {
             if( err ) throw err;
             
             connection = conn;
-            
-            var query = 'call spCreateGroup(' + session.user_sn +')';
+                     
+            var query = 'call spCreateGroup(' + session.user_sn +', '+ mysql.escape( util.generateInviteCode() ) + ')';
             
             connection.query( query , this );
         },
-        function(err, rows, fields)
-        {
+        createGroupHandler,
+        createGroupHandler,
+        createGroupHandler,
+        function (err,rows,fields) {
             if( err ) throw err;
             
             if( rows[0].length == 0 || rows[0][0].$result == -1 ) throw new Error("INVALID_ACCOUNT");
             else if( rows[0][0].$result == -2 ) throw new Error("ALREADY_IN_THE_GROUP");
+            else if( rows[0][0].$result == -3 ) throw new Error("GENERAL_ERROR");
             else if( rows[0][0].$result != 1) throw new Error("GENERAL_ERROR");
             
-            var userIDs = [];
-            if( rows[0][0].$ownerID != null )
-                userIDs.push( rows[0][0].$ownerID );
-            if( rows[0][0].$partnerID != null)
-                userIDs.push( rows[0][0].$partnerID );
-            
-            result.group = { sn:rows[0][0].$groupSN , member:userIDs, active:rows[0][0].$active};
+            var userNames = [];
+            if( rows[0][0].$ownerName != null )
+                userNames.push( rows[0][0].$ownerName );
+            if( rows[0][0].$partnerName != null)
+                userNames.push( rows[0][0].$partnerName );
+                        
+            result.group = { sn:rows[0][0].$groupSN , member:userNames, inviteCode:rows[0][0].$inviteCode, active:rows[0][0].$active};
             
             return null;
         },
@@ -72,4 +74,6 @@ module.exports = function(req, res) {
             return responsor( err, res, result );
         }
     );
+    
 };
+
