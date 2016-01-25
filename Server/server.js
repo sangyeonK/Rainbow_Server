@@ -32,6 +32,9 @@ app.post('/rainbow/login', require( './routes/rainbow/login.js' ) );
 app.get('/rainbow/show_group', require( './routes/rainbow/show_group.js' ) );
 app.post('/rainbow/show_group', require( './routes/rainbow/show_group.js' ) );
 
+app.get('/rainbow/join_group', require( './routes/rainbow/join_group.js' ) );
+app.post('/rainbow/join_group', require( './routes/rainbow/join_group.js' ) );
+
 app.get('/rainbow/create_group', require( './routes/rainbow/create_group.js' ) );
 app.post('/rainbow/create_group', require( './routes/rainbow/create_group.js' ) );
 
@@ -43,6 +46,12 @@ app.post('/rainbow/accept_group', require( './routes/rainbow/accept_group.js' ) 
 
 app.get('/rainbow/reject_group', require( './routes/rainbow/reject_group.js' ) );
 app.post('/rainbow/reject_group', require( './routes/rainbow/reject_group.js' ) );
+
+app.get('/rainbow/insert_bill', require( './routes/rainbow/insert_bill.js' ) );
+app.post('/rainbow/insert_bill', require( './routes/rainbow/insert_bill.js' ) );
+
+app.get('/rainbow/view_bills', require( './routes/rainbow/view_bills.js' ) );
+app.post('/rainbow/view_bills', require( './routes/rainbow/view_bills.js' ) );
 //----- api route list ----- //
 
 app.listen(port, function () {
