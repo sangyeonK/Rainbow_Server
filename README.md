@@ -1,2 +1,1 @@
-# firstRepository
-my First Repository
+# Rainbow Server Repository
