@@ -58,7 +58,7 @@ module.exports = function(req, res) {
         {
             if( err ) throw err;
 
-            if( rows[0].length == 0 ) throw new Error("INVALID_ID_PASSWORD");
+            if( rows[0][0].$userSN == null ) throw new Error("INVALID_ID_PASSWORD");
             
             var userNames = [];
             if( rows[0][0].$ownerName != null )

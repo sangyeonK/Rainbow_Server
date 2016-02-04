@@ -24,9 +24,10 @@ module.exports = function(req, res) {
             
             connection = conn;
             
-            var timestamp = util.makeUnixTime( params.year, params.month, params.day );
+            var startTimestamp = util.makeUnixTime( params.year, params.month, params.day );
+            var endTimestamp = util.makeUnixTime( params.year, params.month, params.day + 1 );
             
-            var query = 'call spViewBills(' + session.user_sn + ', ' + params.groupSN + ', ' + timestamp + ')';
+            var query = 'call spViewBills(' + session.user_sn + ', ' + params.groupSN + ', ' + startTimestamp + ', ' + endTimestamp + ')';
             
             connection.query( query , this );
         },
