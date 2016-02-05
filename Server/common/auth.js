@@ -21,7 +21,9 @@ module.exports.encrypt = function (obj) {
     var encrypted = cipher.update(data, 'utf8', 'binary') + cipher.final('binary');
     
     var encoded = new Buffer(encrypted, 'binary').toString('base64');
-
+    // Convert normal base64 to urlsafe base64
+    var encoded = encoded.replace(/\+/g, '-').replace(/\//g, '_');
+    
     return encoded;
 };
 
