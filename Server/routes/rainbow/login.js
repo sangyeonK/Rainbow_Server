@@ -67,8 +67,8 @@ module.exports = function(req, res) {
                 userNames.push( rows[0][0].$partnerName );
             
             result.rs = auth.encrypt({user_id:rows[0][0].$userID, user_sn:rows[0][0].$userSN});
-            result.user_id = rows[0][0].$userID;
-            result.user_name = rows[0][0].$userName;
+            result.userId = rows[0][0].$userID;
+            result.userName = rows[0][0].$userName;
             result.group = { sn:rows[0][0].$groupSN , member:userNames, inviteCode:rows[0][0].$inviteCode, active:rows[0][0].$active};
             
             return null;
