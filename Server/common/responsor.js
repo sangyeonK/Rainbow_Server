@@ -13,11 +13,11 @@ module.exports = function( err, res, result )
     {
         if( err.sqlState )
         {
-            res.send( makeResponse(util.getErrorCode("DATABASE_ERROR"),"DATABASE_ERROR",{}) );
+            res.status(500).send( makeResponse(util.getErrorCode("DATABASE_ERROR"),"DATABASE_ERROR",{}) );
         }
         else
         {
-            res.send( makeResponse(util.getErrorCode(err.message),err.message,{}) );
+            res.status(500).send( makeResponse(util.getErrorCode(err.message),err.message,{}) );
         }
         logger.error("["+ res.req.url + "]\n" + ( res.req.headers.rs !== undefined ? res.req.headers.rs : "" ) + "\n" + JSON.stringify(res.req.body) + "\n" + ( err.sqlState !== undefined ? "1" : util.getErrorCode(err.message) ) + ' ' + err.message);
     }
