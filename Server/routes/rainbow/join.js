@@ -3,6 +3,7 @@ var logger = require( '../../common/logger.js' );
 var mysql = require( '../../common/mysql.js' );
 var responsor = require('../../common/responsor.js');
 var util = require('../../common/util.js');
+var auth = require('../../common/auth.js');
 
 module.exports = function(req, res) {
 
@@ -36,7 +37,12 @@ module.exports = function(req, res) {
         {
             if( err ) throw err;
             
-            if( rows[0][0].result == -1 ) throw new Error("ALREADY_EXIST_ID");
+            if( rows[0][0].$result == -1 ) throw new Error("ALREADY_EXIST_ID");
+                        
+            result.rs = auth.encrypt({user_id:rows[0][0].$userID, user_sn:rows[0][0].$userSN});
+            result.userId = rows[0][0].$userID;
+            result.userName = rows[0][0].$userName;
+            result.group = { sn:0 , member:["",""], inviteCode:"", active:0};
             
             return null;
         },
