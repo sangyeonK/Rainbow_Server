@@ -52,6 +52,9 @@ app.post('/rainbow/insert_bill', require( './routes/rainbow/insert_bill.js' ) );
 
 app.get('/rainbow/view_bills', require( './routes/rainbow/view_bills.js' ) );
 app.post('/rainbow/view_bills', require( './routes/rainbow/view_bills.js' ) );
+
+app.get('/rainbow/view_bills2', require( './routes/rainbow/view_bills2.js' ) );
+app.post('/rainbow/view_bills2', require( './routes/rainbow/view_bills2.js' ) );
 //----- api route list ----- //
 
 app.listen(port, function () {
