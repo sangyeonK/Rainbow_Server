@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "dependencies": {
     "body-parser": "^1.14.2",
+    "compression": "^1.6.1",
     "express": "^4.13.3",
     "mkdirp": "^0.5.1",
     "mysql": "^2.10.2",
