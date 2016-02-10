@@ -33,7 +33,7 @@ Database 생성 쿼리파일은 `./Server/schema/Rainbow_Server.sql` 에 위치�
 
 접속 Database 설정은 `./Server/common/mysql.js` 파일에 기록되어 있습니다.
 기본값은 아래와 같습니다. 환경에 맞게 파일내용을 수정해 주십시오.
-```json
+```
 {
   connectionLimit : 5,
   host      : 'localhost',
