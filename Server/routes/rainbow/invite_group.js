@@ -9,13 +9,13 @@ module.exports = function(req, res) {
 
     var params, session;
 
-    if(req.headers['rs'] == undefined )
+    if(req.headers['token'] == undefined )
     {
         responsor( new Error("INVALID_SESSION") , res , {} );
         return;
     }
     
-    var session = auth.decrypt(req.headers['rs']);
+    var session = auth.decrypt(req.headers['token']);
     if(session == undefined)
     {
         responsor( new Error("INVALID_SESSION") , res , {} );

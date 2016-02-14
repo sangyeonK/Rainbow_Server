@@ -30,13 +30,13 @@ module.exports.checkRequest = function( req, requireParams, needSession) {
         inputParams = req.body;
 
     //check session
-    if(req.headers['rs'] == undefined )
+    if(req.headers['token'] == undefined )
     {
         result.err = new Error("INVALID_SESSION");
         return result;
     }
         
-    session = auth.decrypt( req.headers['rs'] );
+    session = auth.decrypt( req.headers['token'] );
     
     if(session == undefined)
     {

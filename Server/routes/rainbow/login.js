@@ -10,9 +10,9 @@ module.exports = function(req, res) {
     var params, session, isAutoLogin;
 
     //자동 로그인 처리
-    if(req.headers['rs'] != undefined )
+    if(req.headers['token'] != undefined )
     {
-        var session = auth.decrypt(req.headers['rs']);
+        var session = auth.decrypt(req.headers['token']);
         if(session == undefined)
         {
             return responsor( new Error("INVALID_SESSION") , res , {} );
@@ -66,7 +66,7 @@ module.exports = function(req, res) {
             if( rows[0][0].$partnerName != null)
                 userNames.push( rows[0][0].$partnerName );
             
-            result.rs = auth.encrypt({user_id:rows[0][0].$userID, user_sn:rows[0][0].$userSN});
+            result.token = auth.encrypt({user_id:rows[0][0].$userID, user_sn:rows[0][0].$userSN});
             result.userId = rows[0][0].$userID;
             result.userName = rows[0][0].$userName;
             result.group = { sn:rows[0][0].$groupSN , member:userNames, inviteCode:rows[0][0].$inviteCode, active:rows[0][0].$active};

@@ -39,7 +39,7 @@ module.exports = function(req, res) {
             
             if( rows[0][0].$result == -1 ) throw new Error("ALREADY_EXIST_ID");
                         
-            result.rs = auth.encrypt({user_id:rows[0][0].$userID, user_sn:rows[0][0].$userSN});
+            result.token = auth.encrypt({user_id:rows[0][0].$userID, user_sn:rows[0][0].$userSN});
             result.userId = rows[0][0].$userID;
             result.userName = rows[0][0].$userName;
             result.group = { sn:0 , member:["",""], inviteCode:"", active:0};
