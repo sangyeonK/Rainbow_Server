@@ -1,4 +1,5 @@
 var step = require('step');
+var validator = require('validator');
 var logger = require( '../../common/logger.js' );
 var mysql = require( '../../common/mysql.js' );
 var responsor = require('../../common/responsor.js');
@@ -18,6 +19,11 @@ module.exports = function(req, res) {
     {
         return responsor( new Error("BAD_REQUEST") , res , {} );
     }
+	
+	if( !validator.isEmail( validator.trim(params.userId,"'") ) )
+	{
+		return responsor( new Error("잘못된 EMAIL주소 입니다.") , res , {} );
+	}
     
     var connection, result = {};
     step(
