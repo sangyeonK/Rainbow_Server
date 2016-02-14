@@ -62,7 +62,7 @@ module.exports = function(req, res) {
             if( rows[0][0].$partnerName != null)
                 userNames.push( rows[0][0].$partnerName );
                         
-            result.group = { sn:rows[0][0].$groupSN , member:userNames, inviteCode:rows[0][0].$inviteCode, active:rows[0][0].$active};
+            result = { sn:rows[0][0].$groupSN , member:userNames, inviteCode:rows[0][0].$inviteCode, active:rows[0][0].$active};
             
             return null;
         },
