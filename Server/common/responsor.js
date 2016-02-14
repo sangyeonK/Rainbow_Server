@@ -2,9 +2,15 @@ var logger = require( './logger.js' );
 var util = require( './util.js' );
 function makeResponse( errorCode, errorMessage, result )
 {
-    return { errorCode : errorCode , 
-             errorMessage : errorMessage ,
-             result : result };    
+	if( errorCode === undefined )
+	{
+		return  result;
+	}
+	else
+	{
+		return {errorCode : errorCode , 
+             errorMessage : errorMessage};
+	}
 };
 
 module.exports = function( err, res, result )
