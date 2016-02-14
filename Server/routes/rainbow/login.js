@@ -15,7 +15,7 @@ module.exports = function(req, res) {
         var session = auth.decrypt(req.headers['token']);
         if(session == undefined)
         {
-            return responsor( new Error("INVALID_SESSION") , res , {} );
+            return responsor( util.error(2) , res , {} );
         }
         
         isAutoLogin = true;
@@ -29,7 +29,7 @@ module.exports = function(req, res) {
         
         if( params == undefined || params == false )
         {
-            return responsor( new Error("BAD_REQUEST") , res , {} );
+            return responsor( util.error(3) , res , {} );
         }
         
         isAutoLogin = false;
@@ -58,7 +58,7 @@ module.exports = function(req, res) {
         {
             if( err ) throw err;
 
-            if( rows[0][0].$userSN == null ) throw new Error("INVALID_ID_PASSWORD");
+            if( rows[0][0].$userSN == null ) throw util.error(6);
             
             var userNames = [];
             if( rows[0][0].$ownerName != null )

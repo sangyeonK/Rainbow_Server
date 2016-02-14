@@ -16,8 +16,8 @@ module.exports = function(req, res) {
     function createGroupHandler(err,rows,fields) {
         if( err ) throw err;
         
-        if( rows[0].length == 0 || rows[0][0].$result == -1 ) throw new Error("INVALID_ACCOUNT");
-        else if( rows[0][0].$result == -2 ) throw new Error("ALREADY_IN_THE_GROUP");
+        if( rows[0].length == 0 || rows[0][0].$result == -1 ) throw util.error(5);
+        else if( rows[0][0].$result == -2 ) throw util.error(8);
         else if( rows[0][0].$result == -3 )
         {
             var query = 'call spCreateGroup(' + session.user_sn +', '+ mysql.escape( util.generateInviteCode() ) + ')';
@@ -25,7 +25,7 @@ module.exports = function(req, res) {
             connection.query( query , this );
             return;
         }
-        else if( rows[0][0].$result != 1) throw new Error("GENERAL_ERROR");
+        else if( rows[0][0].$result != 1) throw util.error(999);
 
         return rows;
     }
@@ -51,10 +51,10 @@ module.exports = function(req, res) {
         function (err,rows,fields) {
             if( err ) throw err;
             
-            if( rows[0].length == 0 || rows[0][0].$result == -1 ) throw new Error("INVALID_ACCOUNT");
-            else if( rows[0][0].$result == -2 ) throw new Error("ALREADY_IN_THE_GROUP");
-            else if( rows[0][0].$result == -3 ) throw new Error("GENERAL_ERROR");
-            else if( rows[0][0].$result != 1) throw new Error("GENERAL_ERROR");
+            if( rows[0].length == 0 || rows[0][0].$result == -1 ) throw util.error(5);
+            else if( rows[0][0].$result == -2 ) throw util.error(8);
+            else if( rows[0][0].$result == -3 ) throw util.error(999);
+            else if( rows[0][0].$result != 1) throw util.error(999);
             
             var userNames = [];
             if( rows[0][0].$ownerName != null )

@@ -2,23 +2,25 @@ var mysql = require( './mysql.js' );
 var responsor = require('./responsor.js');
 var auth = require('./auth.js');
 
-var errorCodeList = 
+var errorMessageList = 
 {
-    "DATABASE_ERROR" : 1,           //데이터베이스 처리중 오류 발생
-    "INVALID_SESSION" : 2,          //세션값 오류
-    "BAD_REQUEST" : 3,              //파라미터 입력 오류
-    "ALREADY_EXIST_ID" : 4,         //이미 있는 ID
-    "INVALID_ACCOUNT" : 5,          //잘못된 계정
-    "INVALID_ID_PASSWORD" : 6,      //(르그인 시)잘못된 ID 혹은 패스워드
-    "INVALID_GROUP" : 7,            //잘못된 그룹
-    "ALREADY_IN_THE_GROUP" : 8,     //이미 그룹에 참가한 사용자
-    "ALREADY_FULL_GROUP" : 9,       //이미 사용자가 가득 찬 그룹
-    
-    "GENERAL_ERROR" : 99            //기타 일반적인 오류
+    1:"데이터베이스 처리도중 오류가 발생했습니다.",
+    2:"잘못된 session 입니다.",
+    3:"잘못된 parameter 입니다.",
+    4:"이미 존재하는 ID 입니다.",
+    5:"해당 요청을 처리할 수 없는 계정 입니다.",
+    6:"ID 혹은 패스워드가 틀립니다.",
+    7:"해당 요청을 처리할 수 없는 그룹 입니다.",
+    8:"이미 그룹에 참가한 사용자 입니다.",
+    9:"이미 사용자가 가득 찬 그룹입니다.",
+    10:"잘못된 email 주소 입니다.",
+    999:"서버 처리도중 오류가 발생했습니다."
 };
 
 var inviteCodeAlphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 var inviteCodeLength = 16;
+
+Error.prototype.setErrCode = function( errCode ) { this.code = errCode; return this; }
 
 module.exports.checkRequest = function( req, requireParams, needSession) {
 
@@ -32,7 +34,7 @@ module.exports.checkRequest = function( req, requireParams, needSession) {
     //check session
     if(req.headers['token'] == undefined )
     {
-        result.err = new Error("INVALID_SESSION");
+        result.err = util.error(2);
         return result;
     }
         
@@ -40,20 +42,20 @@ module.exports.checkRequest = function( req, requireParams, needSession) {
     
     if(session == undefined)
     {
-        result.err = new Error("INVALID_SESSION");
+        result.err = util.error(2);
         return result;
     }
     
     //check parameters
     if( inputParams == undefined || inputParams == false )
     {
-        result.err = new Error("BAD_REQUEST");
+        result.err = util.error(3);
         return result;
     }
     
     if( requireParams.length != this.objectSize(inputParams) )
     {
-        result.err = new Error("BAD_REQUEST");
+        result.err = util.error(3);
         return result;
     }
     
@@ -61,7 +63,7 @@ module.exports.checkRequest = function( req, requireParams, needSession) {
     {
         if(inputParams[ requireParams[i] ] == undefined )
         {
-            result.err = new Error("BAD_REQUEST");
+            result.err = util.error(3);
             return result;
         }
         
@@ -126,16 +128,17 @@ module.exports.parseUnixTime = function(unixtime) {
     return { year:d.getFullYear(), month:d.getMonth() + 1 , day:d.getDate(), hour:d.getHours(), min:d.getMinutes(), sec:d.getSeconds() };
 };
 
-module.exports.error = function(code,message) {
-    return {code:code, message:message};
+module.exports.error = function(errCode) {
+    var msg = this.getErrorMessage(errCode);
+    return new Error(msg).setErrCode(errCode);
 };
 
-module.exports.getErrorCode = function(message) {
-    var code = errorCodeList[message];
-    if(code === undefined)
-        return 99;
+module.exports.getErrorMessage = function(errCode) {
+    var msg = errorMessageList[errCode];
+    if(msg === undefined)
+        return "서버 처리도중 오류가 발생했습니다.";
     else 
-        return code;
+        return msg;
 };
 
 module.exports.generateInviteCode = function()

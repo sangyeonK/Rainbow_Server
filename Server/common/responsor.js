@@ -17,15 +17,17 @@ module.exports = function( err, res, result )
 {
     if( err )
     {
-        if( err.sqlState )
+        if( err.errno !== undefined )
         {
-            res.status(500).send( makeResponse(util.getErrorCode("DATABASE_ERROR"),"DATABASE_ERROR",undefined) );
+            console.log (err);
+            res.status(500).send( makeResponse(1,util.getErrorMessage(1),undefined) );
         }
         else
         {
-            res.status(500).send( makeResponse(util.getErrorCode(err.message),err.message,undefined) );
+            console.log (err);
+            res.status(500).send( makeResponse(err.code,err.message,undefined) );
         }
-        logger.error("["+ res.req.url + "]\n" + ( res.req.headers.rs !== undefined ? res.req.headers.rs : "" ) + "\n" + JSON.stringify(res.req.body) + "\n" + ( err.sqlState !== undefined ? "1" : util.getErrorCode(err.message) ) + ' ' + err.message);
+        logger.error("["+ res.req.url + "]\n" + ( res.req.headers.rs !== undefined ? res.req.headers.rs : "" ) + "\n" + JSON.stringify(res.req.body) + "\n" + ( err.errno !== undefined ? "1" : err.code ) + ' ' + err.message);
     }
     else
     {

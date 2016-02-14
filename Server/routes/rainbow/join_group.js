@@ -32,11 +32,11 @@ module.exports = function(req, res) {
         {
             if( err ) throw err;
             
-            if( rows[0][0].$result == -1 ) throw new Error("INVALID_ACCOUNT");
-            else if( rows[0][0].$result == -2 ) throw new Error("INVALID_GROUP");
-            else if( rows[0][0].$result == -3 ) throw new Error("ALREADY_IN_THE_GROUP");
-            else if( rows[0][0].$result == -4 ) throw new Error("ALREADY_FULL_GROUP");
-            else if( rows[0][0].$result != 1) throw new Error("GENERAL_ERROR");
+            if( rows[0][0].$result == -1 ) throw util.error(5);
+            else if( rows[0][0].$result == -2 ) throw util.error(7);
+            else if( rows[0][0].$result == -3 ) throw util.error(8);
+            else if( rows[0][0].$result == -4 ) throw util.error(9);
+            else if( rows[0][0].$result != 1) throw util.error(999);
             
             return null;
         },

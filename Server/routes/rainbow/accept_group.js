@@ -11,13 +11,13 @@ module.exports = function(req, res) {
 
     if(req.headers['token'] == undefined )
     {
-        return responsor( new Error("INVALID_SESSION") , res , {} );
+        return responsor( util.error(2) , res , {} );
     }
     
     var session = auth.decrypt(req.headers['token']);
     if(session == undefined)
     {
-        return responsor( new Error("INVALID_SESSION") , res , {} );
+        return responsor( util.error(2) , res , {} );
     }
     
     if(req.method == "GET")
@@ -27,7 +27,7 @@ module.exports = function(req, res) {
     
     if( params == undefined || params == false )
     {
-        return responsor( new Error("BAD_REQUEST") , res , {} );
+        return responsor( util.error(3) , res , {} );
     }
     
     var connection, result = {};
@@ -50,9 +50,9 @@ module.exports = function(req, res) {
         {
             if( err ) throw err;
             
-            if( rows[0][0].$result == -1 ) throw new Error("INVALID_ACCOUNT");
-            else if( rows[0][0].$result == -2 ) throw new Error("INVALID_GROUP");
-            else if( rows[0][0].$result == -3 ) throw new Error("ALREADY_IN_THE_GROUP");
+            if( rows[0][0].$result == -1 ) throw util.error(5);
+            else if( rows[0][0].$result == -2 ) throw util.error(7);
+            else if( rows[0][0].$result == -3 ) throw util.error(8);
             
             return null;
         },
