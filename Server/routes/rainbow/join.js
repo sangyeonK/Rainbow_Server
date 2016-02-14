@@ -10,9 +10,9 @@ module.exports = function(req, res) {
     var params;
     
     if(req.method == "GET")
-        params = util.checkParameter( ['user_id','username','password'] , req.query );
+        params = util.checkParameter( ['userId','userName','password'] , req.query );
     else if(req.method == "POST")
-        params = util.checkParameter( ['user_id','username','password'] , req.body );
+        params = util.checkParameter( ['userId','userName','password'] , req.body );
     
     if( params == undefined || params == false )
     {
@@ -29,7 +29,7 @@ module.exports = function(req, res) {
             
             connection = conn;
             
-            var query = 'CALL spJoin(' + params.user_id + ', ' + params.username + ', ' + params.password + ' )';
+            var query = 'CALL spJoin(' + params.userId + ', ' + params.userName + ', ' + params.password + ' )';
             
             connection.query( query , this );
         },
