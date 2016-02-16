@@ -1,6 +1,6 @@
 {
-  "name": "rainbow_money_manager",
-  "version": "0.1.0",
+  "repository": "npm/npm",
+  "license" : "MIT",
   "dependencies": {
     "body-parser": "^1.14.2",
     "compression": "^1.6.1",
