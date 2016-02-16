@@ -41,7 +41,7 @@ module.exports = function(req, res) {
                 var date = util.parseUnixTime( rows[0][i].Timestamp );                
                 bills.push( {year:date.year, month:date.month, day:date.day, userSN:rows[0][i].UserSN, userName:rows[0][i].UserName, category:rows[0][i].Category, amount:rows[0][i].Amount, comment:rows[0][i].Comment} );
             }
-            result.bills = bills;
+            result = bills;
             
             return null;
         },
