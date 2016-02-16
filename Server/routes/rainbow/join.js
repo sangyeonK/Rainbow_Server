@@ -8,6 +8,22 @@ var auth = require('../../common/auth.js');
 
 module.exports = function(req, res) {
 
+    function spJoinHandler(err,rows,fields) {
+        if( err ) throw err;
+        
+        if( rows[0].length == 0 || rows[0][0].$result == -1 ) throw util.error(4);
+        else if( rows[0][0].$result == -3 )
+        {
+            var query = 'CALL spJoin(' + params.userId + ', ' + params.userName + ', ' + params.password + ', ' + mysql.escape( util.generateInviteCode() ) + ')';
+            
+            connection.query( query , this );
+            return;
+        }
+        else if( rows[0][0].$result != 1) throw util.error(999);
+
+        return rows;
+    }
+    
     var params;
 
     if(req.method == "GET")
@@ -35,10 +51,13 @@ module.exports = function(req, res) {
             
             connection = conn;
             
-            var query = 'CALL spJoin(' + params.userId + ', ' + params.userName + ', ' + params.password + ' )';
+            var query = 'CALL spJoin(' + params.userId + ', ' + params.userName + ', ' + params.password + ', ' + mysql.escape( util.generateInviteCode() ) + ')';
             
             connection.query( query , this );
         },
+        spJoinHandler,
+        spJoinHandler,
+        spJoinHandler,
         function ( err, rows, fields )
         {
             if( err ) throw err;
@@ -48,7 +67,7 @@ module.exports = function(req, res) {
             result.token = auth.encrypt({user_id:rows[0][0].$userID, user_sn:rows[0][0].$userSN});
             result.userId = rows[0][0].$userID;
             result.userName = rows[0][0].$userName;
-            result.group = { sn:0 , member:["",""], inviteCode:"", active:0};
+            result.group = { sn:rows[0][0].$groupSN , member:[rows[0][0].$userName,""], inviteCode:rows[0][0].$inviteCode, active:0};
             
             return null;
         },

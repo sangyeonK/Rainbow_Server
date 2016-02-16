@@ -1,8 +1,13 @@
--- MySQL dump 10.15  Distrib 10.0.20-MariaDB, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.27, for Win32 (x86)
 --
 -- Host: localhost    Database: rainbow
 -- ------------------------------------------------------
--- Server version	10.0.20-MariaDB
+-- Server version	5.5.27-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -11,91 +16,19 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `Account`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Account` (
-  `UserSN` bigint(20) NOT NULL,
-  `UserID` varchar(45) NOT NULL,
-  `UserName` varchar(64) NOT NULL,
-  `Password` varchar(256) NOT NULL,
-  `GroupSN` bigint(20) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`UserSN`),
-  UNIQUE KEY `Account_UserID` (`UserID`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Bill`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Bill` (
-  `Idx` bigint(20) NOT NULL,
-  `GroupSN` bigint(20) NOT NULL,
-  `UserSN` bigint(20) NOT NULL,
-  `Timestamp` int(11) NOT NULL,
-  `Category` varchar(45) NOT NULL,
-  `Amount` int(11) NOT NULL,
-  `Comment` varchar(256) CHARACTER SET utf8mb4 NOT NULL,
-  PRIMARY KEY (`Idx`),
-  KEY `bill_GroupSN` (`GroupSN`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Group`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Group` (
-  `GroupSN` bigint(20) NOT NULL,
-  `CreateTimestamp` int(11) NOT NULL,
-  `OwnerSN` bigint(20) NOT NULL,
-  `PartnerSN` bigint(20) NOT NULL,
-  `InviteCode` char(16) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `Active` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`GroupSN`),
-  KEY `Group_OwnerSN` (`OwnerSN`),
-  KEY `Group_PartnerSN` (`PartnerSN`),
-  KEY `group_InviteCode` (`InviteCode`(4))
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `GroupInvite`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `GroupInvite` (
-  `Idx` bigint(20) NOT NULL,
-  `InvitedUserSN` bigint(20) NOT NULL,
-  `InvitingUserSN` bigint(20) NOT NULL,
-  `Timestamp` int(11) NOT NULL,
-  `GroupSN` bigint(20) NOT NULL,
-  PRIMARY KEY (`Idx`),
-  KEY `GroupInvite_InvitedUserSN` (`InvitedUserSN`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping routines for database 'rainbow'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `spAcceptGroupInvite` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spAcceptGroupInvite`(in user_sn bigint, in group_invite_idx bigint)
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `spAcceptGroupInvite`(IN `user_sn` BIGINT, IN `group_invite_idx` BIGINT)
 BEGIN
 	declare $groupSN_invite bigint;
     declare $groupSN_current bigint;
@@ -126,22 +59,23 @@ BEGIN
 	END;
     
     select $result;
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `spCreateGroup` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spCreateGroup`(in user_sn bigint, in invite_code char(16))
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `spCreateGroup`(IN `user_sn` BIGINT, IN `invite_code` CHAR(16))
 BEGIN
 
 	declare $result int;
@@ -177,22 +111,23 @@ BEGIN
     END;
     
     select $result,$groupSN,$ownerName,$partnerName,$inviteCode,$active;
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `spGetUserAccount` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetUserAccount`(in user_sn bigint, in user_id varchar(45), in passwd varchar(256))
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `spGetUserAccount`(IN `user_sn` BIGINT, IN `user_id` VARCHAR(45), IN `passwd` VARCHAR(256))
 BEGIN
 
     declare $userSN bigint;
@@ -220,22 +155,23 @@ BEGIN
     end if;
     
     select $userSN,$userID,$userName,$groupSN,$ownerName,$partnerName,$inviteCode,$active;
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `spInsertBill` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spInsertBill`(in user_sn bigint, in group_sn bigint, in person_type tinyint, in amount int, in bill_timestamp int, in category varchar(45),in hashtags varchar(256),in bill_comment varchar(256))
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `spInsertBill`(IN `user_sn` BIGINT, IN `group_sn` BIGINT, IN `person_type` TINYINT, IN `amount` INT, IN `bill_timestamp` INT, IN `category` VARCHAR(45), IN `hashtags` VARCHAR(256), IN `bill_comment` VARCHAR(256))
 BEGIN
 
 	declare $result int;
@@ -289,106 +225,23 @@ BEGIN
     END;
     
     select $result;
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `spInviteGroup` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spJoin`(IN `p_userID` VARCHAR(45), IN `p_username` VARCHAR(64), IN `p_password` VARCHAR(256))
-BEGIN
-	declare $result int;
-    declare $userSN bigint default 0;
-    if exists( select UserSN from `Account` where UserID=p_userID ) then
-		set $result = -1;
-	else
-		insert into `Account` (`UserID`, `UserName`, `Password` ) values ( p_userID , p_username, p_password );
-		set $userSN = last_insert_id();
-        set $result = 1;		
-    end if;
-
-    select $result,$userSN,p_userID as $userID,p_username as $userName;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spRejectGroupInvite`(in user_sn bigint, in group_invite_idx bigint)
-BEGIN
-	delete from `GroupInvite` where Idx = group_invite_idx;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spShowGroupInvite`(in user_sn bigint)
-BEGIN
-	SELECT Idx,Account.UserID,GroupInvite.GroupSN FROM rainbow.GroupInvite JOIN rainbow.Account ON 
-	Account.UserSN = GroupInvite.InvitingUserSN
-	where InvitedUserSN = user_sn order by Idx; 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spViewBills`(in user_sn bigint, in group_sn bigint, in start_timestamp int, in end_timestamp int)
-BEGIN
-    select `UserSN`,`UserName`,`Timestamp`,`Category`,`Amount`,`Comment` from `Bill` left join `Account` using (UserSN) where `Bill`.GroupSN = group_sn and `Timestamp` >= start_timestamp and `Timestamp` < end_timestamp order by Idx;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spInviteGroup`(in inviting_user_sn bigint, in inviting_group_sn bigint, in invited_user_id varchar(45) )
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `spInviteGroup`(IN `inviting_user_sn` BIGINT, IN `inviting_group_sn` BIGINT, IN `invited_user_id` VARCHAR(45))
 BEGIN
 
 	declare $result int;
@@ -430,12 +283,13 @@ BEGIN
     
     select $result;
     
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `spJoin` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -445,7 +299,48 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spJoinGroup`(in user_sn bigint, in invite_code char(16))
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `spJoin`(IN `p_userID` VARCHAR(45), IN `p_username` VARCHAR(64), IN `p_password` VARCHAR(256),IN `p_inviteCode` CHAR(16))
+BEGIN
+	declare $result int;
+	declare $groupSN bigint;
+    declare $userSN bigint default 0;
+    
+    a: BEGIN
+    
+    if exists( select UserSN from `Account` where UserID=p_userID ) then
+		set $result = -1;
+	elseif exists ( select 1 from `Group` where `InviteCode` = p_inviteCode ) then
+		set $result = -3;
+	else
+		insert into `Account` (`UserID`, `UserName`, `Password` ) values ( p_userID , p_username, p_password );
+		set $userSN = last_insert_id();
+		insert into `Group` (`CreateTimestamp`, `OwnerSN`,`InviteCode`) values (unix_timestamp(), $userSN, p_inviteCode);
+		set $groupSN = last_insert_id();
+		update `Account` set `GroupSN` = $groupSN where `UserSN` = $userSN;
+
+        set $result = 1;		
+    end if;
+    
+    END;
+    
+    select $result,$userSN,p_userID as $userID,p_username as $userName,$groupSN,p_inviteCode as $inviteCode;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `spJoinGroup` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `spJoinGroup`(IN `user_sn` BIGINT, IN `invite_code` CHAR(16))
 BEGIN
 	
 	declare $result int;
@@ -478,22 +373,63 @@ BEGIN
     END;
     
     select $result;
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `spRejectGroupInvite` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spShowGroups`(in user_sn bigint)
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `spRejectGroupInvite`(IN `user_sn` BIGINT, IN `group_invite_idx` BIGINT)
+BEGIN
+	delete from `GroupInvite` where Idx = group_invite_idx;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `spShowGroupInvite` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `spShowGroupInvite`(IN `user_sn` BIGINT)
+BEGIN
+	SELECT Idx,Account.UserID,GroupInvite.GroupSN FROM rainbow.GroupInvite JOIN rainbow.Account ON 
+	Account.UserSN = GroupInvite.InvitingUserSN
+	where InvitedUserSN = user_sn order by Idx; 
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `spShowGroups` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `spShowGroups`(IN `user_sn` BIGINT)
 BEGIN
 
 	declare $result int;
@@ -521,7 +457,26 @@ BEGIN
     
     select $result,$groupSN,$ownerName,$partnerName,$active;
     
-END ;;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `spViewBills` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `spViewBills`(IN `user_sn` BIGINT, IN `group_sn` BIGINT, IN `start_timestamp` INT, IN `end_timestamp` INT)
+BEGIN
+    select `UserSN`,`UserName`,`Timestamp`,`Category`,`Amount`,`Comment` from `Bill` left join `Account` using (UserSN) where `Bill`.GroupSN = group_sn and `Timestamp` >= start_timestamp and `Timestamp` < end_timestamp order by Idx;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -532,6 +487,9 @@ DELIMITER ;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-02-10  9:05:40
+-- Dump completed on 2016-02-16 16:30:32
