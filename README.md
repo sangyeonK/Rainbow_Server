@@ -21,13 +21,17 @@ Rainbow_Server 는 두툼-커플가계부(https://github.com/Nexters/Rainbow/) �
     
 ### Database 생성
 
-Database 생성 쿼리파일은 `./Server/schema/Rainbow_Server.sql` 에 위치하고 있습니다.
+Database 생성 쿼리파일은 `./Server/schema/` 에 위치하고 있습니다.
+
+`./Server/schema/Rainbow_Server_Table.sql` : 테이블 생성 쿼리문
+`./Server/schema/Rainbow_Server_Routine.sql` : 저장 프로시저 생성 쿼리문
 
 * mysql 혹은 mariaDB를 설치
 * Database에 로그인: `mysql -uUsername -pPassword`
 * Database 생성: `mysql> create database rainbow`
 * Database 선택: `mysql> use rainbow`
-* sql 파일 추출: `mysql> source ./Server/schema/Rainbow_Server.sql`
+* sql 파일 추출(테이블): `mysql> source ./Server/schema/Rainbow_Server_Table.sql`
+* sql 파일 추출(저장 프로시저): `mysql> source ./Server/schema/Rainbow_Server_Routine.sql`
 
 ### Database 설정 수정
 
