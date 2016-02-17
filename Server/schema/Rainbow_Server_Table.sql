@@ -74,23 +74,6 @@ CREATE TABLE `Group` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `GroupInvite`
---
-
-DROP TABLE IF EXISTS `GroupInvite`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `GroupInvite` (
-  `Idx` bigint(20) NOT NULL AUTO_INCREMENT,
-  `InvitedUserSN` bigint(20) NOT NULL,
-  `InvitingUserSN` bigint(20) NOT NULL,
-  `Timestamp` int(11) NOT NULL,
-  `GroupSN` bigint(20) NOT NULL,
-  PRIMARY KEY (`Idx`),
-  KEY `GroupInvite_InvitedUserSN` (`InvitedUserSN`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
