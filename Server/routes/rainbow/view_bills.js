@@ -5,13 +5,16 @@ var responsor = require('../../common/responsor.js');
 var util = require('../../common/util.js');
 
 module.exports = function(req, res) {
-
-    var reqAnalysis = util.checkRequest( req, ["groupSN","year","month","day"] );
     
-    if( reqAnalysis.err !== undefined )
-        return responsor( reqAnalysis.err, res, {} );
+    var connection, result = {};
     
-    var params = reqAnalysis.params, session = reqAnalysis.session, connection, result = {};
+    var session = util.checkSession( req );
+    if( session.err !== undefined )
+        return responsor( session.err, res );
+    
+    var params = util.checkRequest( req, ["groupSN","year"], ["month","day"] );
+    if( params.err !== undefined )
+        return responsor( params.err, res );
     
     step(
         function () 
@@ -23,10 +26,25 @@ module.exports = function(req, res) {
             if( err ) throw err;
             
             connection = conn;
+
+            var startTimestamp, endTimestamp;
             
-            var startTimestamp = util.makeUnixTime( params.year, params.month, params.day );
-            var endTimestamp = util.makeUnixTime( params.year, params.month, params.day + 1 );
-            
+            if( params.month !== undefined && params.day !== undefined )
+            {
+                startTimestamp = util.makeUnixTime( params.year, params.month, params.day );
+                endTimestamp = util.makeUnixTime( params.year, params.month, params.day + 1 );
+            }
+            else if( params.month !== undefined )
+            {
+                startTimestamp = util.makeUnixTime( params.year, params.month, 1 );
+                endTimestamp = util.makeUnixTime( params.year, params.month + 1, 1 );
+            }
+            else
+            {
+                startTimestamp = util.makeUnixTime( params.year, 1, 1 );
+                endTimestamp = util.makeUnixTime( params.year+1, 1, 1 );
+            }
+
             var query = 'call spViewBills(' + session.user_sn + ', ' + params.groupSN + ', ' + startTimestamp + ', ' + endTimestamp + ')';
             
             connection.query( query , this );

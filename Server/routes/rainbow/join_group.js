@@ -5,13 +5,16 @@ var responsor = require('../../common/responsor.js');
 var util = require('../../common/util.js');
 
 module.exports = function(req, res) {
-
-    var reqAnalysis = util.checkRequest( req, ["invite_code"] );
     
-    if( reqAnalysis.err !== undefined )
-        return responsor( reqAnalysis.err, res, {} );
+    var connection, result = {};
     
-    var params = reqAnalysis.params, session = reqAnalysis.session, connection, result = {};
+    var session = util.checkSession( req );
+    if( session.err !== undefined )
+        return responsor( session.err, res );
+    
+    var params = util.checkRequest( req, ['invite_code'] );
+    if( params.err !== undefined )
+        return responsor( params.err, res );
     
     step(
         function () 

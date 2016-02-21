@@ -24,24 +24,18 @@ module.exports = function(req, res) {
         return rows;
     }
     
-    var params;
+    var connection, result = {};
+    var params = util.checkRequest( req, ['userId','userName','password'] );
 
-    if(req.method == "GET")
-        params = util.checkParameter( ['userId','userName','password'] , req.query );
-    else if(req.method == "POST")
-        params = util.checkParameter( ['userId','userName','password'] , req.body );
     
-    if( params == undefined || params == false )
-    {
-        return responsor( util.error(3) , res , {} );
-    }
-	
+    if( params.err !== undefined )
+        return responsor( params.err, res );
+
 	if( !validator.isEmail( validator.trim(params.userId,"'") ) )
 	{
-		return responsor( util.error(10) , res , {} );
+		return responsor( util.error(10) , res );
 	}
-    
-    var connection, result = {};
+
     step(
         function () {
             mysql.getConnection( this );

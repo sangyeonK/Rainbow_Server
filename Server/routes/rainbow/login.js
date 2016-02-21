@@ -6,36 +6,31 @@ var util = require('../../common/util.js');
 var auth = require('../../common/auth.js');
 
 module.exports = function(req, res) {
-
+    
+    var connection, result = {};
     var params, session, isAutoLogin;
 
     //자동 로그인 처리
     if(req.headers['token'] != undefined )
     {
-        var session = auth.decrypt(req.headers['token']);
+        session = auth.decrypt(req.headers['token']);
         if(session == undefined)
         {
-            return responsor( util.error(2) , res , {} );
+            return responsor( util.error(2) , res );
         }
         
         isAutoLogin = true;
     }
     else
     {
-        if(req.method == "GET")
-            params = util.checkParameter( ['user_id','password'] , req.query );
-        else if(req.method == "POST")
-            params = util.checkParameter( ['user_id','password'] , req.body );
+        params = util.checkRequest( req, ['user_id','password'] ); 
         
-        if( params == undefined || params == false )
-        {
-            return responsor( util.error(3) , res , {} );
-        }
+        if( params.err !== undefined )
+            return responsor( params.err, res );
         
         isAutoLogin = false;
     }
-    
-    var connection, result = {};
+
     step(
         function () 
         {

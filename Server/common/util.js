@@ -22,7 +22,28 @@ var inviteCodeLength = 16;
 
 Error.prototype.setErrCode = function( errCode ) { this.code = errCode; return this; }
 
-module.exports.checkRequest = function( req, requireParams, needSession) {
+module.exports.checkSession = function( req ) {
+    
+    var result = {};
+    
+    if(req.headers['token'] == undefined )
+    {
+        result.err = this.error(2);
+        return result;
+    }
+        
+    session = auth.decrypt( req.headers['token'] );
+    
+    if(session == undefined)
+    {
+        result.err = this.error(2);
+        return result;
+    }
+    
+    return session;
+}
+
+module.exports.checkRequest = function( req, requireParams, optionalPrams ) {
 
     var session,inputParams,result = {};
     
@@ -31,43 +52,25 @@ module.exports.checkRequest = function( req, requireParams, needSession) {
     else if(req.method == "POST")
         inputParams = req.body;
 
-    //check session
-    if(req.headers['token'] == undefined )
-    {
-        result.err = util.error(2);
-        return result;
-    }
-        
-    session = auth.decrypt( req.headers['token'] );
-    
-    if(session == undefined)
-    {
-        result.err = util.error(2);
-        return result;
-    }
-    
-    //check parameters
     if( inputParams == undefined || inputParams == false )
     {
-        result.err = util.error(3);
+        result.err = this.error(4);
         return result;
     }
     
-    if( requireParams.length != this.objectSize(inputParams) )
-    {
-        result.err = util.error(3);
-        return result;
-    }
+    //필요한 파라미터 보다 많은 수의 파라미터가 입력되는 상황 확인
+    var unresolveInputParam = this.objectSize(inputParams);
     
+ 
     for(var i = 0 ; i < requireParams.length ; i++ )
     {
-        if(inputParams[ requireParams[i] ] == undefined )
-        {
-            result.err = util.error(3);
-            return result;
-        }
-        
         var val = inputParams[ requireParams[i] ];
+        
+        if( val === undefined )
+        {
+            result.err = this.error(3);
+            return result;            
+        }
         
         if( /^\d+$/.test(val) )
             val = parseInt( val );
@@ -75,9 +78,36 @@ module.exports.checkRequest = function( req, requireParams, needSession) {
             val = mysql.escape( val );
         
         inputParams[ requireParams[i] ] = val;
+        unresolveInputParam--;
     }
     
-    return {session:session, params:inputParams};
+    if( optionalPrams !== undefined )
+    {
+        for(var i = 0 ; i < optionalPrams.length ; i++ )
+        {
+
+            var val = inputParams[ optionalPrams[i] ];
+            
+            if( val !== undefined )
+            {
+                if( /^\d+$/.test(val) )
+                    val = parseInt( val );
+                else
+                    val = mysql.escape( val );
+                
+                inputParams[ optionalPrams[i] ] = val;
+                unresolveInputParam--;
+            }
+        }
+    }
+    
+    if( unresolveInputParam > 0 )
+    {
+        result.err = this.error(3);
+        return result;                    
+    }
+    
+    return inputParams;
 };
 
 module.exports.checkParameter = function( params , request_body) {
