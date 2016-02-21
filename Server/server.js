@@ -48,6 +48,9 @@ app.post('/rainbow/view_bills_month', require( './routes/rainbow/view_bills_mont
 
 app.get('/rainbow/view_bills_year', require( './routes/rainbow/view_bills_year.js' ) );
 app.post('/rainbow/view_bills_year', require( './routes/rainbow/view_bills_year.js' ) );
+
+app.get('/rainbow/view_bills_range', require( './routes/rainbow/view_bills_range.js' ) );
+app.post('/rainbow/view_bills_range', require( './routes/rainbow/view_bills_range.js' ) );
 //----- api route list ----- //
 
 app.listen(port, function () {
