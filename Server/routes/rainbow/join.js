@@ -35,6 +35,12 @@ module.exports = function(req, res) {
 	{
 		return responsor( util.error(10) , res );
 	}
+    
+    var passwd = validator.trim(params.password,"'");
+    if( !validator.isLength( passwd , 6 ) || !validator.matches( passwd, "[a-z]", "i") || !validator.matches( passwd, "[0-9]" ) )
+    {
+        return responsor( util.error(11) , res );
+    }
 
     step(
         function () {
