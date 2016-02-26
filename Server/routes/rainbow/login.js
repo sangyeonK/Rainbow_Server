@@ -43,9 +43,9 @@ module.exports = function(req, res) {
             connection = conn;
             
             if( isAutoLogin )
-                var query = 'call spGetUserAccount('+ session.user_sn +', "", "")';
+                var query = 'call spGetUserAccount('+ session.user_sn +')';
             else
-                var query = 'call spGetUserAccount(0, '+ params.user_id +', '+ params.password +')';
+                var query = 'call spLogin('+ params.user_id +', '+ params.password +')';
             
             connection.query( query , this );
         },
@@ -61,7 +61,7 @@ module.exports = function(req, res) {
             if( rows[0][0].$partnerName != null)
                 userNames.push( rows[0][0].$partnerName );
             
-            result.token = auth.encrypt({user_id:rows[0][0].$userID, user_sn:rows[0][0].$userSN});
+            result.token = auth.encrypt({user_id:rows[0][0].$userID, user_sn:rows[0][0].$userSN, group_sn:rows[0][0].$groupSN});
             result.userId = rows[0][0].$userID;
             result.userName = rows[0][0].$userName;
             result.group = { sn:rows[0][0].$groupSN , member:userNames, inviteCode:rows[0][0].$inviteCode, active:rows[0][0].$active};

@@ -64,7 +64,7 @@ module.exports = function(req, res) {
             
             if( rows[0][0].$result == -1 ) throw util.error(4);
                         
-            result.token = auth.encrypt({user_id:rows[0][0].$userID, user_sn:rows[0][0].$userSN});
+            result.token = auth.encrypt({user_id:rows[0][0].$userID, user_sn:rows[0][0].$userSN, group_sn:rows[0][0].$groupSN});
             result.userId = rows[0][0].$userID;
             result.userName = rows[0][0].$userName;
             result.group = { sn:rows[0][0].$groupSN , member:[rows[0][0].$userName,""], inviteCode:rows[0][0].$inviteCode, active:0};
