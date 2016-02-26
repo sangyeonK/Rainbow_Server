@@ -204,21 +204,25 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spJoinGroup`(IN `user_sn` BIGINT, IN `invite_code` CHAR(16))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spJoinGroup`(IN `p_userSN` BIGINT, IN `p_inviteCode` CHAR(16))
 BEGIN
 	
 	declare $result int;
+    declare $ownerSN bigint;
     declare $partnerSN bigint;
     declare $currentGroupSN bigint;
     declare $currentGroupActive tinyint;
     declare $inviteGroupSN bigint;
     
     a: BEGIN
-	select GroupSN into $currentGroupSN from `Account` where UserSN = user_sn;
+	select GroupSN into $currentGroupSN from `Account` where UserSN = p_userSN;
     select Active into $currentGroupActive from `Group` where GroupSN = $currentGroupSN;
-    select GroupSN,PartnerSN into $inviteGroupSN,$partnerSN from `Group` where InviteCode = invite_code;
+    select GroupSN,OwnerSN,PartnerSN into $inviteGroupSN,$ownerSN,$partnerSN from `Group` where InviteCode = p_inviteCode;
     
     if $currentGroupSN is null then
+		set $result = -1;
+        leave a;
+	elseif $ownerSN = p_userSN then
 		set $result = -1;
         leave a;
 	elseif $inviteGroupSN is null then
@@ -232,8 +236,8 @@ BEGIN
         leave a;
     end if;
 
-	update `Account` set `GroupSN` = $inviteGroupSN where `UserSN` = user_sn;
-	update `Group` set `PartnerSN` = user_sn, `Active` = 1 where `GroupSN` = $inviteGroupSN;
+	update `Account` set `GroupSN` = $inviteGroupSN where `UserSN` = p_userSN;
+	update `Group` set `PartnerSN` = p_userSN, `Active` = 1 where `GroupSN` = $inviteGroupSN;
     
     set $result = 1;
     END;
