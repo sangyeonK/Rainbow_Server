@@ -329,7 +329,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spViewBills`(IN `user_sn` BIGINT, IN `group_sn` BIGINT, IN `start_timestamp` INT, IN `end_timestamp` INT)
 BEGIN
-    select `UserSN`,`UserName`,`Timestamp`,`Category`,`Amount`,`Comment` from `Bill` left join `Account` using (UserSN) where `Bill`.GroupSN = group_sn and `Timestamp` >= start_timestamp and `Timestamp` < end_timestamp order by Idx;
+    select `UserSN`,`UserName`,`Timestamp`,`Category`,`Amount`,`Comment` from `Bill` left join `Account` using (UserSN) where `Bill`.GroupSN = group_sn and `Timestamp` >= start_timestamp and `Timestamp` < end_timestamp order by Idx desc;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
