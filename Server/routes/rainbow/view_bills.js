@@ -63,9 +63,9 @@ module.exports = function(req, res) {
             {
                 var date = util.parseUnixTime( rows[0][i].Timestamp );
                 if( session.user_sn == rows[0][i].UserSN )
-                    var bill_OwnerType = "M";
+                    var bill_OwnerType = "MINE";
                 else
-                    var bill_OwnerType = "Y";
+                    var bill_OwnerType = "PARTNER";
 				switch(ownerType)
 				{
 					case "MINE":
