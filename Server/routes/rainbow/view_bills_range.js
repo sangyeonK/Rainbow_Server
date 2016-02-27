@@ -18,7 +18,7 @@ module.exports = function(req, res) {
         return responsor( params.err, res );
     
 	var ownerType = validator.trim(params.ownerType,"'");
-	if(ownerType != "ALL" && ownerType != "MY" && ownerType != "PARTNER")
+	if(ownerType != "ALL" && ownerType != "MINE" && ownerType != "PARTNER")
         
 		return responsor( util.error(3), res );
 	
@@ -54,7 +54,7 @@ module.exports = function(req, res) {
 				
 				switch(ownerType)
 				{
-					case "MY":
+					case "MINE":
 						if( session.user_sn == rows[0][i].UserSN )
 							bills.push( {year:date.year, month:date.month, day:date.day, userSN:rows[0][i].UserSN, userName:rows[0][i].UserName, category:rows[0][i].Category, amount:rows[0][i].Amount, comment:rows[0][i].Comment} );
 						break;
