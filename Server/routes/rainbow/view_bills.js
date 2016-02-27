@@ -62,7 +62,10 @@ module.exports = function(req, res) {
             for(var i = 0 ; i < rows[0].length ; i++ )
             {
                 var date = util.parseUnixTime( rows[0][i].Timestamp );
-				
+                if( session.user_sn == rows[0][i].UserSN )
+                    var bill_OwnerType = "M";
+                else
+                    var bill_OwnerType = "Y";
 				switch(ownerType)
 				{
 					case "MINE":
@@ -75,7 +78,8 @@ module.exports = function(req, res) {
                                             userName:rows[0][i].UserName,
                                             category:rows[0][i].Category,
                                             amount:rows[0][i].Amount,
-                                            comment:rows[0][i].Comment
+                                            comment:rows[0][i].Comment,
+                                            ownerType:bill_OwnerType
                                         } );
 						break;
 					case "PARTNER":
@@ -88,7 +92,8 @@ module.exports = function(req, res) {
                                             userName:rows[0][i].UserName,
                                             category:rows[0][i].Category,
                                             amount:rows[0][i].Amount,
-                                            comment:rows[0][i].Comment
+                                            comment:rows[0][i].Comment,
+                                            ownerType:bill_OwnerType
                                         } );
 						break;
 					default:
@@ -100,7 +105,8 @@ module.exports = function(req, res) {
                                         userName:rows[0][i].UserName,
                                         category:rows[0][i].Category,
                                         amount:rows[0][i].Amount,
-                                        comment:rows[0][i].Comment
+                                        comment:rows[0][i].Comment,
+                                        ownerType:bill_OwnerType
                                     } );
 				}
                 

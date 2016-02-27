@@ -51,19 +51,23 @@ module.exports = function(req, res) {
             for(var i = 0 ; i < rows[0].length ; i++ )
             {
                 var date = util.parseUnixTime( rows[0][i].Timestamp );                
-				
+                if( session.user_sn == rows[0][i].UserSN )
+                    var bill_OwnerType = "M";
+                else
+                    var bill_OwnerType = "Y";
+                
 				switch(ownerType)
 				{
 					case "MINE":
 						if( session.user_sn == rows[0][i].UserSN )
-							bills.push( {year:date.year, month:date.month, day:date.day, userSN:rows[0][i].UserSN, userName:rows[0][i].UserName, category:rows[0][i].Category, amount:rows[0][i].Amount, comment:rows[0][i].Comment} );
+							bills.push( {year:date.year, month:date.month, day:date.day, userSN:rows[0][i].UserSN, userName:rows[0][i].UserName, category:rows[0][i].Category, amount:rows[0][i].Amount, comment:rows[0][i].Comment, ownerType:bill_OwnerType} );
 						break;
 					case "PARTNER":
 						if( session.user_sn != rows[0][i].UserSN )
-							bills.push( {year:date.year, month:date.month, day:date.day, userSN:rows[0][i].UserSN, userName:rows[0][i].UserName, category:rows[0][i].Category, amount:rows[0][i].Amount, comment:rows[0][i].Comment} );
+							bills.push( {year:date.year, month:date.month, day:date.day, userSN:rows[0][i].UserSN, userName:rows[0][i].UserName, category:rows[0][i].Category, amount:rows[0][i].Amount, comment:rows[0][i].Comment, ownerType:bill_OwnerType} );
 						break;
 					default:
-						bills.push( {year:date.year, month:date.month, day:date.day, userSN:rows[0][i].UserSN, userName:rows[0][i].UserName, category:rows[0][i].Category, amount:rows[0][i].Amount, comment:rows[0][i].Comment} );
+						bills.push( {year:date.year, month:date.month, day:date.day, userSN:rows[0][i].UserSN, userName:rows[0][i].UserName, category:rows[0][i].Category, amount:rows[0][i].Amount, comment:rows[0][i].Comment, ownerType:bill_OwnerType} );
 				}
 			
             }
