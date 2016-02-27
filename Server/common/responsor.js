@@ -29,6 +29,7 @@ module.exports = function( err, res, result )
     }
     else
     {
+        logger.info("["+ res.req.url + "]\n" + ( res.req.headers.rs !== undefined ? res.req.headers.rs : "" ) + "\n" + JSON.stringify(res.req.body) + "\n" + JSON.stringify(result));
         res.send( makeResponse(undefined,undefined,result) );
     }
 };

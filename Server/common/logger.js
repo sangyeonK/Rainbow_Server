@@ -43,3 +43,8 @@ module.exports.error = function( str )
     logger.error( str );
 };
 
+module.exports.info = function( str )
+{
+    logger.info( str );
+};
+

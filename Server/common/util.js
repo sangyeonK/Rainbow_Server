@@ -111,32 +111,6 @@ module.exports.checkRequest = function( req, requireParams, optionalPrams ) {
     return inputParams;
 };
 
-module.exports.checkParameter = function( params , request_body) {
-
-    if( params.length != this.objectSize(request_body) )
-    {
-        return false;
-    }
-        
-    for(var i = 0 ; i < params.length ; i++ )
-    {
-        if(request_body[ params[i] ] == undefined )
-        {
-            return false;
-        }
-        
-        var val = request_body[ params[i] ];
-        
-        if( /^\d+$/.test(val) )
-            val = parseInt( val );
-        else
-            val = mysql.escape( val );
-        
-        request_body[ params[i] ] = val;
-    }
-    return request_body;
-};
-
 module.exports.objectSize = function(obj) {
     var size = 0, key;
     for (key in obj) {
