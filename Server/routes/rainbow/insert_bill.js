@@ -76,7 +76,8 @@ module.exports = function(req, res) {
                         userName:userName,
                         category:validator.trim(params.category,"'"),
                         amount:params.amount,
-                        comment:validator.trim(params.comment,"'")
+                        comment:validator.trim(params.comment,"'"),
+						ownerType:"MINE"
                     };
 
 			
