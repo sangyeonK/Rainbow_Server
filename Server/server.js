@@ -13,12 +13,6 @@ mkdirp('./logs', function(err) {
 
 });
 
-winston.add(winston.transports.File , {"filename": "./logs/exceptions.log" } );
-
-process.on('uncaughtException', function(err) {
-  winston.error(err);
-});
-
 app.use(compression());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

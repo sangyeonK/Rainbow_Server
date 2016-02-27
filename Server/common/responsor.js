@@ -25,11 +25,11 @@ module.exports = function( err, res, result )
         {
             res.status(500).send( makeResponse(err.code,err.message,undefined) );
         }
-        logger.error("["+ res.req.url + "]\n" + ( res.req.headers.rs !== undefined ? res.req.headers.rs : "" ) + "\n" + JSON.stringify(res.req.body) + "\n" + ( err.errno !== undefined ? "1" : err.code ) + ' ' + err.message);
+        logger.error( err.message, {URL:res.req.url, TOKEN:res.req.headers.token, BODY:res.req.body, ERRORNO:( err.errno !== undefined ? "1" : err.code )});
     }
     else
     {
-        logger.info("["+ res.req.url + "]\n" + ( res.req.headers.rs !== undefined ? res.req.headers.rs : "" ) + "\n" + JSON.stringify(res.req.body) + "\n" + JSON.stringify(result));
+        logger.debug( '', {URL:res.req.url, TOKEN:res.req.headers.token, BODY:res.req.body, RESULT:JSON.stringify(result)});
         res.send( makeResponse(undefined,undefined,result) );
     }
 };
