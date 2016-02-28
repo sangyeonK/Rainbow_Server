@@ -1,16 +1,31 @@
 {
-  "repository": "npm/npm",
-  "license" : "MIT",
+  "name": "rainbow_server",
+  "version": "0.1.0",
+  "description": "rainbow server api",
+  "author": "sangyeonK <konasona@gmail.com>",
+  "scripts": {
+    "test": "vows --spec --isolate",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:sangyeonK/Rainbow_Server.git"
+  },
+  "bugs": "https://github.com/sangyeonK/Rainbow_Server/issues",
   "dependencies": {
     "body-parser": "^1.14.2",
     "compression": "^1.6.1",
     "express": "^4.13.3",
     "mkdirp": "^0.5.1",
     "mysql": "^2.10.2",
-    "node-serialize": "0.0.4",
-    "step": "0.0.6",
+    "node-serialize": "^0.0.4",
+    "step": "^0.0.6",
     "validator": "^4.8.0",
     "winston": "^2.1.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "vows": "^0.8.1"
+  },
+  "private": true,
+  "license": "MIT"
 }
