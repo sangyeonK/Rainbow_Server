@@ -1,18 +1,26 @@
 var step = require('step');
+var validator = require('validator');
 var logger = require( '../../common/logger.js' );
 var mysql = require( '../../common/mysql.js' );
 var responsor = require('../../common/responsor.js');
 var util = require('../../common/util.js');
 
 module.exports = function(req, res) {
-
-    var reqAnalysis = util.checkRequest( req, ["groupSN","year","month","day"] );
     
-    if( reqAnalysis.err !== undefined )
-        return responsor( reqAnalysis.err, res, {} );
+    var connection, result = {};
     
-    var params = reqAnalysis.params, session = reqAnalysis.session, connection, result = {};
+    var session = util.checkSession( req );
+    if( session.err !== undefined )
+        return responsor( session.err, res );
     
+    var params = util.checkRequest( req, ["year","ownerType"], ["month","day"] );
+    if( params.err !== undefined )
+        return responsor( params.err, res );
+    
+	var ownerType = validator.trim(params.ownerType,"'");
+	if(ownerType != "ALL" && ownerType != "MINE" && ownerType != "PARTNER")
+		return responsor( util.error(3), res );
+	
     step(
         function () 
         {
@@ -23,11 +31,26 @@ module.exports = function(req, res) {
             if( err ) throw err;
             
             connection = conn;
+
+            var startTimestamp, endTimestamp;
             
-            var startTimestamp = util.makeUnixTime( params.year, params.month, params.day );
-            var endTimestamp = util.makeUnixTime( params.year, params.month, params.day + 1 );
-            
-            var query = 'call spViewBills(' + session.user_sn + ', ' + params.groupSN + ', ' + startTimestamp + ', ' + endTimestamp + ')';
+            if( params.month !== undefined && params.day !== undefined )
+            {
+                startTimestamp = util.makeUnixTime( params.year, params.month, params.day );
+                endTimestamp = util.makeUnixTime( params.year, params.month, params.day + 1 );
+            }
+            else if( params.month !== undefined )
+            {
+                startTimestamp = util.makeUnixTime( params.year, params.month, 1 );
+                endTimestamp = util.makeUnixTime( params.year, params.month + 1, 1 );
+            }
+            else
+            {
+                startTimestamp = util.makeUnixTime( params.year, 1, 1 );
+                endTimestamp = util.makeUnixTime( params.year+1, 1, 1 );
+            }
+
+            var query = 'call spViewBills(' + session.user_sn + ', ' + session.group_sn + ', ' + startTimestamp + ', ' + endTimestamp + ')';
             
             connection.query( query , this );
         },
@@ -38,8 +61,55 @@ module.exports = function(req, res) {
             var bills = [];
             for(var i = 0 ; i < rows[0].length ; i++ )
             {
-                var date = util.parseUnixTime( rows[0][i].Timestamp );                
-                bills.push( {year:date.year, month:date.month, day:date.day, userSN:rows[0][i].UserSN, userName:rows[0][i].UserName, category:rows[0][i].Category, amount:rows[0][i].Amount, comment:rows[0][i].Comment} );
+                var date = util.parseUnixTime( rows[0][i].Timestamp );
+                if( session.user_sn == rows[0][i].UserSN )
+                    var bill_OwnerType = "MINE";
+                else
+                    var bill_OwnerType = "PARTNER";
+				switch(ownerType)
+				{
+					case "MINE":
+						if( session.user_sn == rows[0][i].UserSN )
+							bills.push( {
+                                            year:date.year,
+                                            month:date.month,
+                                            day:date.day,
+                                            userSN:rows[0][i].UserSN,
+                                            userName:rows[0][i].UserName,
+                                            category:rows[0][i].Category,
+                                            amount:rows[0][i].Amount,
+                                            comment:rows[0][i].Comment,
+                                            ownerType:bill_OwnerType
+                                        } );
+						break;
+					case "PARTNER":
+						if( session.user_sn != rows[0][i].UserSN )
+							bills.push( {
+                                            year:date.year,
+                                            month:date.month,
+                                            day:date.day,
+                                            userSN:rows[0][i].UserSN,
+                                            userName:rows[0][i].UserName,
+                                            category:rows[0][i].Category,
+                                            amount:rows[0][i].Amount,
+                                            comment:rows[0][i].Comment,
+                                            ownerType:bill_OwnerType
+                                        } );
+						break;
+					default:
+						bills.push( {
+                                        year:date.year,
+                                        month:date.month,
+                                        day:date.day,
+                                        userSN:rows[0][i].UserSN,
+                                        userName:rows[0][i].UserName,
+                                        category:rows[0][i].Category,
+                                        amount:rows[0][i].Amount,
+                                        comment:rows[0][i].Comment,
+                                        ownerType:bill_OwnerType
+                                    } );
+				}
+                
             }
             result = bills;
             

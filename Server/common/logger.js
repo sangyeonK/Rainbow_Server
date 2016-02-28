@@ -5,17 +5,29 @@ var logger = new (winston.Logger)({
     transports: [
     
       new (winston.transports.Console)({
-        timestamp: function() { return getTodayDateTime(); },
-        formatter: function(options) {
-            return options.timestamp() +' '+ (undefined !== options.message ? options.message : '');
-        } }),
+            timestamp:getTodayDateTime,
+            json:true,
+         }),
       
       new (winston.transports.File)({ 
-        timestamp: function() { return getTodayDateTime(); },
-        formatter: function(options) {
-            return options.timestamp() +' '+ (undefined !== options.message ? options.message : '');
-        },
-        filename: './logs/log.log' })
+            timestamp:getTodayDateTime,
+            name: 'log-error',
+            filename: './logs/error.log',
+            level:'error' }),
+      new (winston.transports.File)({
+            timestamp:getTodayDateTime,
+            name: 'log-info',
+            filename: './logs/info.log',
+            level:'info' }),
+      new (winston.transports.File)({
+            timestamp:getTodayDateTime,
+            name: 'log-debug',
+            filename: './logs/debug.log',
+            level:'debug' }),
+        
+    ],
+    exceptionHandlers: [
+      new winston.transports.File({ filename: './logs/exceptions.log' })
     ]
 });
 
@@ -38,8 +50,17 @@ function getTodayDateTime(){
     return today = yyyy+'/'+mm+'/'+dd+' '+hour+':'+min+':'+sec;
 }
 
-module.exports.error = function( str )
+module.exports.error = function( str, metadata )
 {
-    logger.error( str );
+    logger.error( str , metadata);
 };
 
+module.exports.info = function( str, metadata )
+{
+    logger.info( str , metadata);
+};
+
+module.exports.debug = function( str, metadata )
+{
+    logger.debug( str , metadata);
+};

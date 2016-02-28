@@ -6,12 +6,15 @@ var util = require('../../common/util.js');
 
 module.exports = function(req, res) {
 
-    var reqAnalysis = util.checkRequest( req, ["groupSN","year","month","day"] );
+    var connection, result = {};
     
-    if( reqAnalysis.err !== undefined )
-        return responsor( reqAnalysis.err, res, {} );
+    var session = util.checkSession( req );
+    if( session.err !== undefined )
+        return responsor( session.err, res );
     
-    var params = reqAnalysis.params, session = reqAnalysis.session, connection, result = {};
+    var params = util.checkRequest( req, ["groupSN","year","month","day"] );
+    if( params.err !== undefined )
+        return responsor( params.err, res );
     
     step(
         function () 

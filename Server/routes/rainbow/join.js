@@ -24,24 +24,24 @@ module.exports = function(req, res) {
         return rows;
     }
     
-    var params;
+    var connection, result = {};
+    var params = util.checkRequest( req, ['userId','userName','password'] );
 
-    if(req.method == "GET")
-        params = util.checkParameter( ['userId','userName','password'] , req.query );
-    else if(req.method == "POST")
-        params = util.checkParameter( ['userId','userName','password'] , req.body );
     
-    if( params == undefined || params == false )
-    {
-        return responsor( util.error(3) , res , {} );
-    }
-	
+    if( params.err !== undefined )
+        return responsor( params.err, res );
+
 	if( !validator.isEmail( validator.trim(params.userId,"'") ) )
 	{
-		return responsor( util.error(10) , res , {} );
+		return responsor( util.error(10) , res );
 	}
     
-    var connection, result = {};
+    var passwd = validator.trim(params.password,"'");
+    if( !validator.isLength( passwd , 6 ) || !validator.matches( passwd, "[a-z]", "i") || !validator.matches( passwd, "[0-9]" ) )
+    {
+        return responsor( util.error(11) , res );
+    }
+
     step(
         function () {
             mysql.getConnection( this );
@@ -64,7 +64,7 @@ module.exports = function(req, res) {
             
             if( rows[0][0].$result == -1 ) throw util.error(4);
                         
-            result.token = auth.encrypt({user_id:rows[0][0].$userID, user_sn:rows[0][0].$userSN});
+            result.token = auth.encrypt({user_id:rows[0][0].$userID, user_sn:rows[0][0].$userSN, group_sn:rows[0][0].$groupSN});
             result.userId = rows[0][0].$userID;
             result.userName = rows[0][0].$userName;
             result.group = { sn:rows[0][0].$groupSN , member:[rows[0][0].$userName,""], inviteCode:rows[0][0].$inviteCode, active:0};

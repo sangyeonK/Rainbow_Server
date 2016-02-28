@@ -6,36 +6,31 @@ var util = require('../../common/util.js');
 var auth = require('../../common/auth.js');
 
 module.exports = function(req, res) {
-
+    
+    var connection, result = {};
     var params, session, isAutoLogin;
 
     //자동 로그인 처리
     if(req.headers['token'] != undefined )
     {
-        var session = auth.decrypt(req.headers['token']);
+        session = auth.decrypt(req.headers['token']);
         if(session == undefined)
         {
-            return responsor( util.error(2) , res , {} );
+            return responsor( util.error(2) , res );
         }
         
         isAutoLogin = true;
     }
     else
     {
-        if(req.method == "GET")
-            params = util.checkParameter( ['user_id','password'] , req.query );
-        else if(req.method == "POST")
-            params = util.checkParameter( ['user_id','password'] , req.body );
+        params = util.checkRequest( req, ['user_id','password'] ); 
         
-        if( params == undefined || params == false )
-        {
-            return responsor( util.error(3) , res , {} );
-        }
+        if( params.err !== undefined )
+            return responsor( params.err, res );
         
         isAutoLogin = false;
     }
-    
-    var connection, result = {};
+
     step(
         function () 
         {
@@ -48,9 +43,9 @@ module.exports = function(req, res) {
             connection = conn;
             
             if( isAutoLogin )
-                var query = 'call spGetUserAccount('+ session.user_sn +', "", "")';
+                var query = 'call spGetUserAccount('+ session.user_sn +')';
             else
-                var query = 'call spGetUserAccount(0, '+ params.user_id +', '+ params.password +')';
+                var query = 'call spLogin('+ params.user_id +', '+ params.password +')';
             
             connection.query( query , this );
         },
@@ -66,7 +61,7 @@ module.exports = function(req, res) {
             if( rows[0][0].$partnerName != null)
                 userNames.push( rows[0][0].$partnerName );
             
-            result.token = auth.encrypt({user_id:rows[0][0].$userID, user_sn:rows[0][0].$userSN});
+            result.token = auth.encrypt({user_id:rows[0][0].$userID, user_sn:rows[0][0].$userSN, group_sn:rows[0][0].$groupSN});
             result.userId = rows[0][0].$userID;
             result.userName = rows[0][0].$userName;
             result.group = { sn:rows[0][0].$groupSN , member:userNames, inviteCode:rows[0][0].$inviteCode, active:rows[0][0].$active};
