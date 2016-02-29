@@ -27,7 +27,7 @@ var logger = new (winston.Logger)({
         
     ],
     exceptionHandlers: [
-      new winston.transports.Console({ timestamp:getTodayDateTime, formatter:function(options) { return options.meta.stack.join("\n"); }, prettyPrint:true,eol:"\n" }),
+      new winston.transports.Console({ timestamp:getTodayDateTime, formatter:function(options) { return options.meta.stack.join("\n"); } }),
       new winston.transports.File({ timestamp:getTodayDateTime, filename: './logs/exceptions.log' })
     ]
 });
