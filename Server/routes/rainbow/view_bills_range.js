@@ -4,6 +4,7 @@ var logger = require( '../../common/logger.js' );
 var mysql = require( '../../common/mysql.js' );
 var responsor = require('../../common/responsor.js');
 var util = require('../../common/util.js');
+var Constants = require('../../common/constants.js');
 
 module.exports = function(req, res) {
     
@@ -18,10 +19,10 @@ module.exports = function(req, res) {
         return responsor( params.err, res );
     
 	var ownerType = validator.trim(params.ownerType,"'");
-	if(ownerType != "ALL" && ownerType != "MINE" && ownerType != "PARTNER")
-        
-		return responsor( util.error(3), res );
-	
+    
+    if( Constants.CONSTRAINTS.OWNER_TYPE.indexOf( ownerType ) )
+        return responsor( util.error(3), res );
+    
     step(
         function () 
         {
