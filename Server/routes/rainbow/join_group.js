@@ -28,7 +28,7 @@ module.exports = function(req, res) {
             
             connection = conn;
             
-            var query = 'call spJoinGroup(' + session.user_sn + ', ' + params.invite_code + ')';
+            var query = mysql.makeQuery('call spJoinGroup(%d,%s)', session.user_sn, params.invite_code );
 
             connection.query( query , this );
         },
@@ -48,7 +48,7 @@ module.exports = function(req, res) {
         {
             if( err ) throw err;
             
-            var query = 'call spGetUserAccount('+ session.user_sn +')';
+            var query = mysql.makeQuery('call spGetUserAccount(%d)', session.user_sn );
             
             connection.query( query , this );
         },

@@ -1,4 +1,5 @@
 var mysql = require( 'mysql' );
+var util = require('util');
 var logger = require( './logger.js' );
 var responsor = require('./responsor.js');
 
@@ -15,24 +16,12 @@ module.exports.getConnection = function( callback ) {
 
     connectionPool.getConnection( callback );
 }
-/*
-module.exports.getConnection = function( res, callback ) {
 
-    connectionPool.getConnection( function( err, connection ) {
-        if( err )
-        {
-            logger.error(err.message);
-            res.send( responsor(0,"DATABASE_ERROR",{}) );
-            return;
-        }
-        else
-            callback(err, connection );
+module.exports.makeQuery = function() {
+    
+    for( var i = 1 ; i < arguments.length ; i++ )
+        if(typeof(arguments[i]) == "string")
+            arguments[i] = mysql.escape( arguments[i] );
         
-    });
-}
-*/
-
-module.exports.escape = function( str ) {
-
-    return mysql.escape( str );
+    return util.format.apply(null,arguments);
 }

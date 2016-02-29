@@ -30,7 +30,7 @@ module.exports = function(req, res) {
             var startTimestamp = common.makeUnixTime( params.year, params.month, params.day );
             var endTimestamp = common.makeUnixTime( params.year, params.month, params.day + 1 );
             
-            var query = 'call spViewBills(' + session.user_sn + ', ' + params.groupSN + ', ' + startTimestamp + ', ' + endTimestamp + ')';
+            var query = mysql.makeQuery('call spViewBills(%d,%d,%d,%d)',session.user_sn, session.group_sn, startTimestamp, endTimestamp);
             
             connection.query( query , this );
         },

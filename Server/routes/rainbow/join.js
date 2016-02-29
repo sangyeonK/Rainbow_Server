@@ -14,7 +14,7 @@ module.exports = function(req, res) {
         if( rows[0].length == 0 || rows[0][0].$result == -1 ) throw common.error(4);
         else if( rows[0][0].$result == -3 )
         {
-            var query = 'CALL spJoin(' + params.userId + ', ' + params.userName + ', ' + params.password + ', ' + mysql.escape( common.generateInviteCode() ) + ')';
+            var query = mysql.makeQuery('call spJoin(%s,%s,%s,%s)', params.userId, params.userName, params.password, common.generateInviteCode() );
             
             connection.query( query , this );
             return;
@@ -51,7 +51,7 @@ module.exports = function(req, res) {
             
             connection = conn;
             
-            var query = 'CALL spJoin(' + params.userId + ', ' + params.userName + ', ' + params.password + ', ' + mysql.escape( common.generateInviteCode() ) + ')';
+            var query = mysql.makeQuery('call spJoin(%s,%s,%s,%s)', params.userId, params.userName, params.password, common.generateInviteCode() );
             
             connection.query( query , this );
         },

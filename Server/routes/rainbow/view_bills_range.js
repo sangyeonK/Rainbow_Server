@@ -38,8 +38,8 @@ module.exports = function(req, res) {
             
             var startTimestamp = common.makeUnixTime( params.startYear, params.startMonth, params.startDay );
             var endTimestamp = common.makeUnixTime( params.endYear, params.endMonth, params.endDay + 1 );
-
-            var query = 'call spViewBills(' + session.user_sn + ', ' + session.group_sn + ', ' + startTimestamp + ', ' + endTimestamp + ')';
+            
+            var query = mysql.makeQuery('call spViewBills(%d,%d,%d,%d)',session.user_sn, session.group_sn, startTimestamp, endTimestamp);
             
             connection.query( query , this );
         },

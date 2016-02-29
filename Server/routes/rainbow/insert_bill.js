@@ -29,7 +29,7 @@ module.exports = function(req, res) {
             
             connection = conn;
             
-            var query = 'call spGetUserAccount('+ session.user_sn +')';
+            var query = mysql.makeQuery( 'call spGetUserAccount(%d)', session.user_sn );
             
             connection.query( query , this );
         },
@@ -49,13 +49,14 @@ module.exports = function(req, res) {
             
             var timestamp = common.makeUnixTime( params.year, params.month, params.day );
             
-            var query = 'call spInsertBill(' + session.user_sn + ', ' + 
-                                               session.group_sn + ', ' + 
-                                               params.amount + ', ' + 
-                                               timestamp + ', ' + 
-                                               params.category + ', ' + 
-                                               params.comment + ')';
-                                               
+            var query = mysql.makeQuery( 'call spInsertBill(%d,%d,%d,%d,%s,%s)', 
+                                                session.user_sn,
+                                                session.group_sn,
+                                                params.amount,
+                                                timestamp,
+                                                params.category,
+                                                params.comment );
+                                                
             connection.query( query , this );
         },
         function(err, rows, fields)

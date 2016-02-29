@@ -43,9 +43,9 @@ module.exports = function(req, res) {
             connection = conn;
             
             if( isAutoLogin )
-                var query = mysql.createQuery( 'call spGetUserAccount(%d)', session.user_sn );
+                var query = mysql.makeQuery( 'call spGetUserAccount(%d)', session.user_sn );
             else
-                var query = mysql.createQuery( 'call spLogin(%s,%s)', params.user_id, params.password );
+                var query = mysql.makeQuery( 'call spLogin(%s,%s)', params.user_id, params.password );
             
             connection.query( query , this );
         },
