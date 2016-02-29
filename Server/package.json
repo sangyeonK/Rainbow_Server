@@ -24,7 +24,7 @@
     "winston": "^2.1.1"
   },
   "devDependencies": {
-    "vows": "^0.8.1"
+    "mocha": "^2.4.5"
   },
   "private": true,
   "license": "MIT"
