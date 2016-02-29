@@ -5,6 +5,7 @@ var winston = require('winston');
 var bodyParser = require('body-parser');
 var compression = require('compression');
 var express = require('express');
+var configure = require('./common/configure.js');
 
 var app = express();
 
@@ -38,6 +39,8 @@ app.get('/rainbow/view_bills_range', require( './routes/rainbow/view_bills_range
 app.post('/rainbow/view_bills_range', require( './routes/rainbow/view_bills_range.js' ) );
 //----- api route list ----- //
 
+configure.loadConfig("mysql","mysql.json");
+
 app.listen(port, function () {
-  console.log('server start');
+  console.log('[' + configure.env + '] server start');
 });
