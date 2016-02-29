@@ -2,18 +2,18 @@ var step = require('step');
 var logger = require( '../../common/logger.js' );
 var mysql = require( '../../common/mysql.js' );
 var responsor = require('../../common/responsor.js');
-var util = require('../../common/util.js');
+var common = require('../../common/common.js');
 var auth = require('../../common/auth.js');
 
 module.exports = function(req, res) {
     
     var connection, result = {};
     
-    var session = util.checkSession( req );
+    var session = common.checkSession( req );
     if( session.err !== undefined )
         return responsor( session.err, res );
     
-    var params = util.checkRequest( req, ['invite_code'] );
+    var params = common.checkRequest( req, ['invite_code'] );
     if( params.err !== undefined )
         return responsor( params.err, res );
     
@@ -36,11 +36,11 @@ module.exports = function(req, res) {
         {
             if( err ) throw err;
             
-            if( rows[0][0].$result == -1 ) throw util.error(5);
-            else if( rows[0][0].$result == -2 ) throw util.error(7);
-            else if( rows[0][0].$result == -3 ) throw util.error(8);
-            else if( rows[0][0].$result == -4 ) throw util.error(9);
-            else if( rows[0][0].$result != 1) throw util.error(999);
+            if( rows[0][0].$result == -1 ) throw common.error(5);
+            else if( rows[0][0].$result == -2 ) throw common.error(7);
+            else if( rows[0][0].$result == -3 ) throw common.error(8);
+            else if( rows[0][0].$result == -4 ) throw common.error(9);
+            else if( rows[0][0].$result != 1) throw common.error(999);
             
             return null;
         },
@@ -56,7 +56,7 @@ module.exports = function(req, res) {
         {
             if( err ) throw err;
 
-            if( rows[0][0].$userSN == null ) throw util.error(6);
+            if( rows[0][0].$userSN == null ) throw common.error(6);
             
             var userNames = [];
             if( rows[0][0].$ownerName != null )

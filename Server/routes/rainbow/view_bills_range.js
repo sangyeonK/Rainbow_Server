@@ -3,25 +3,25 @@ var validator = require('validator');
 var logger = require( '../../common/logger.js' );
 var mysql = require( '../../common/mysql.js' );
 var responsor = require('../../common/responsor.js');
-var util = require('../../common/util.js');
+var common = require('../../common/common.js');
 var Constants = require('../../common/constants.js');
 
 module.exports = function(req, res) {
     
     var connection, result = {};
     
-    var session = util.checkSession( req );
+    var session = common.checkSession( req );
     if( session.err !== undefined )
         return responsor( session.err, res );
     
-    var params = util.checkRequest( req, ["startYear","startMonth","startDay","endYear","endMonth","endDay","ownerType"] );
+    var params = common.checkRequest( req, ["startYear","startMonth","startDay","endYear","endMonth","endDay","ownerType"] );
     if( params.err !== undefined )
         return responsor( params.err, res );
     
 	var ownerType = validator.trim(params.ownerType,"'");
     
     if( Constants.CONSTRAINTS.OWNER_TYPE.indexOf( ownerType ) )
-        return responsor( util.error(3), res );
+        return responsor( common.error(3), res );
     
     step(
         function () 
@@ -36,8 +36,8 @@ module.exports = function(req, res) {
 
             var startTimestamp, endTimestamp;
             
-            var startTimestamp = util.makeUnixTime( params.startYear, params.startMonth, params.startDay );
-            var endTimestamp = util.makeUnixTime( params.endYear, params.endMonth, params.endDay + 1 );
+            var startTimestamp = common.makeUnixTime( params.startYear, params.startMonth, params.startDay );
+            var endTimestamp = common.makeUnixTime( params.endYear, params.endMonth, params.endDay + 1 );
 
             var query = 'call spViewBills(' + session.user_sn + ', ' + session.group_sn + ', ' + startTimestamp + ', ' + endTimestamp + ')';
             
@@ -51,7 +51,7 @@ module.exports = function(req, res) {
 			
             for(var i = 0 ; i < rows[0].length ; i++ )
             {
-                var date = util.parseUnixTime( rows[0][i].Timestamp );                
+                var date = common.parseUnixTime( rows[0][i].Timestamp );                
                 if( session.user_sn == rows[0][i].UserSN )
                     var bill_OwnerType = "MINE";
                 else

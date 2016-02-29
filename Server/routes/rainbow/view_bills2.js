@@ -2,17 +2,17 @@ var step = require('step');
 var logger = require( '../../common/logger.js' );
 var mysql = require( '../../common/mysql.js' );
 var responsor = require('../../common/responsor.js');
-var util = require('../../common/util.js');
+var common = require('../../common/common.js');
 
 module.exports = function(req, res) {
 
     var connection, result = {};
     
-    var session = util.checkSession( req );
+    var session = common.checkSession( req );
     if( session.err !== undefined )
         return responsor( session.err, res );
     
-    var params = util.checkRequest( req, ["groupSN","year","month","day"] );
+    var params = common.checkRequest( req, ["groupSN","year","month","day"] );
     if( params.err !== undefined )
         return responsor( params.err, res );
     
@@ -27,8 +27,8 @@ module.exports = function(req, res) {
             
             connection = conn;
             
-            var startTimestamp = util.makeUnixTime( params.year, params.month, params.day );
-            var endTimestamp = util.makeUnixTime( params.year, params.month, params.day + 1 );
+            var startTimestamp = common.makeUnixTime( params.year, params.month, params.day );
+            var endTimestamp = common.makeUnixTime( params.year, params.month, params.day + 1 );
             
             var query = 'call spViewBills(' + session.user_sn + ', ' + params.groupSN + ', ' + startTimestamp + ', ' + endTimestamp + ')';
             
@@ -41,7 +41,7 @@ module.exports = function(req, res) {
             var bills = [];
             for(var i = 0 ; i < rows[0].length ; i++ )
             {
-                var date = util.parseUnixTime( rows[0][i].Timestamp );                
+                var date = common.parseUnixTime( rows[0][i].Timestamp );                
                 bills.push( {year:date.year, month:date.month, day:date.day, userSN:rows[0][i].UserSN, userName:rows[0][i].UserName, category:rows[0][i].Category, amount:rows[0][i].Amount, comment:rows[0][i].Comment} );
             }
             result = bills;

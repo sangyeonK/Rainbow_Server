@@ -3,7 +3,7 @@ var validator = require('validator');
 var logger = require( '../../common/logger.js' );
 var mysql = require( '../../common/mysql.js' );
 var responsor = require('../../common/responsor.js');
-var util = require('../../common/util.js');
+var common = require('../../common/common.js');
 var auth = require('../../common/auth.js');
 
 module.exports = function(req, res) {
@@ -11,21 +11,21 @@ module.exports = function(req, res) {
     function spJoinHandler(err,rows,fields) {
         if( err ) throw err;
         
-        if( rows[0].length == 0 || rows[0][0].$result == -1 ) throw util.error(4);
+        if( rows[0].length == 0 || rows[0][0].$result == -1 ) throw common.error(4);
         else if( rows[0][0].$result == -3 )
         {
-            var query = 'CALL spJoin(' + params.userId + ', ' + params.userName + ', ' + params.password + ', ' + mysql.escape( util.generateInviteCode() ) + ')';
+            var query = 'CALL spJoin(' + params.userId + ', ' + params.userName + ', ' + params.password + ', ' + mysql.escape( common.generateInviteCode() ) + ')';
             
             connection.query( query , this );
             return;
         }
-        else if( rows[0][0].$result != 1) throw util.error(999);
+        else if( rows[0][0].$result != 1) throw common.error(999);
 
         return rows;
     }
     
     var connection, result = {};
-    var params = util.checkRequest( req, ['userId','userName','password'] );
+    var params = common.checkRequest( req, ['userId','userName','password'] );
 
     
     if( params.err !== undefined )
@@ -33,13 +33,13 @@ module.exports = function(req, res) {
 
 	if( !validator.isEmail( validator.trim(params.userId,"'") ) )
 	{
-		return responsor( util.error(10) , res );
+		return responsor( common.error(10) , res );
 	}
     
     var passwd = validator.trim(params.password,"'");
     if( !validator.isLength( passwd , 6 ) || !validator.matches( passwd, "[a-z]", "i") || !validator.matches( passwd, "[0-9]" ) )
     {
-        return responsor( util.error(11) , res );
+        return responsor( common.error(11) , res );
     }
 
     step(
@@ -51,7 +51,7 @@ module.exports = function(req, res) {
             
             connection = conn;
             
-            var query = 'CALL spJoin(' + params.userId + ', ' + params.userName + ', ' + params.password + ', ' + mysql.escape( util.generateInviteCode() ) + ')';
+            var query = 'CALL spJoin(' + params.userId + ', ' + params.userName + ', ' + params.password + ', ' + mysql.escape( common.generateInviteCode() ) + ')';
             
             connection.query( query , this );
         },
@@ -62,7 +62,7 @@ module.exports = function(req, res) {
         {
             if( err ) throw err;
             
-            if( rows[0][0].$result == -1 ) throw util.error(4);
+            if( rows[0][0].$result == -1 ) throw common.error(4);
                         
             result.token = auth.encrypt({user_id:rows[0][0].$userID, user_sn:rows[0][0].$userSN, group_sn:rows[0][0].$groupSN});
             result.userId = rows[0][0].$userID;

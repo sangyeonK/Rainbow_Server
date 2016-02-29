@@ -57,8 +57,8 @@ module.exports.checkRequest = function( req, requireParams, optionalPrams ) {
         
         if( /^\d+$/.test(val) )
             val = parseInt( val );
-        else
-            val = mysql.escape( val );
+        //else
+            //val = mysql.escape( val );
         
         inputParams[ requireParams[i] ] = val;
         unresolveInputParam--;
@@ -75,8 +75,8 @@ module.exports.checkRequest = function( req, requireParams, optionalPrams ) {
             {
                 if( /^\d+$/.test(val) )
                     val = parseInt( val );
-                else
-                    val = mysql.escape( val );
+                //else
+                //    val = mysql.escape( val );
                 
                 inputParams[ optionalPrams[i] ] = val;
                 unresolveInputParam--;

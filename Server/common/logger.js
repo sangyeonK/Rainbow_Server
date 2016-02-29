@@ -27,7 +27,8 @@ var logger = new (winston.Logger)({
         
     ],
     exceptionHandlers: [
-      new winston.transports.File({ filename: './logs/exceptions.log' })
+      new winston.transports.Console({ timestamp:getTodayDateTime, formatter:function(options) { return options.meta.stack.join("\n"); }, prettyPrint:true,eol:"\n" }),
+      new winston.transports.File({ timestamp:getTodayDateTime, filename: './logs/exceptions.log' })
     ]
 });
 
@@ -52,15 +53,24 @@ function getTodayDateTime(){
 
 module.exports.error = function( str, metadata )
 {
+    if( metadata === undefined )
+        metadata = {};
+    
     logger.error( str , metadata);
 };
 
 module.exports.info = function( str, metadata )
 {
+    if( metadata === undefined )
+        metadata = {};
+    
     logger.info( str , metadata);
 };
 
 module.exports.debug = function( str, metadata )
 {
+    if( metadata === undefined )
+        metadata = {};
+    
     logger.debug( str , metadata);
 };

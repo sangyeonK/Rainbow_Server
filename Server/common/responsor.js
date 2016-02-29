@@ -1,5 +1,5 @@
 var logger = require( './logger.js' );
-var util = require( './util.js' );
+var common = require( './common.js' );
 function makeResponse( errorCode, errorMessage, result )
 {
 	if( errorCode === undefined )
@@ -19,7 +19,7 @@ module.exports = function( err, res, result )
     {
         if( err.errno !== undefined )
         {
-            res.status(500).send( makeResponse(1,util.getErrorMessage(1),undefined) );
+            res.status(500).send( makeResponse(1,common.getErrorMessage(1),undefined) );
         }
         else
         {

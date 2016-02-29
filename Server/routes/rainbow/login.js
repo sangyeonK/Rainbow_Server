@@ -2,7 +2,7 @@ var step = require('step');
 var logger = require( '../../common/logger.js' );
 var mysql = require( '../../common/mysql.js' );
 var responsor = require('../../common/responsor.js');
-var util = require('../../common/util.js');
+var common = require('../../common/common.js');
 var auth = require('../../common/auth.js');
 
 module.exports = function(req, res) {
@@ -16,14 +16,14 @@ module.exports = function(req, res) {
         session = auth.decrypt(req.headers['token']);
         if(session == undefined)
         {
-            return responsor( util.error(2) , res );
+            return responsor( common.error(2) , res );
         }
         
         isAutoLogin = true;
     }
     else
     {
-        params = util.checkRequest( req, ['user_id','password'] ); 
+        params = common.checkRequest( req, ['user_id','password'] ); 
         
         if( params.err !== undefined )
             return responsor( params.err, res );
@@ -43,9 +43,9 @@ module.exports = function(req, res) {
             connection = conn;
             
             if( isAutoLogin )
-                var query = 'call spGetUserAccount('+ session.user_sn +')';
+                var query = mysql.createQuery( 'call spGetUserAccount(%d)', session.user_sn );
             else
-                var query = 'call spLogin('+ params.user_id +', '+ params.password +')';
+                var query = mysql.createQuery( 'call spLogin(%s,%s)', params.user_id, params.password );
             
             connection.query( query , this );
         },
@@ -53,7 +53,7 @@ module.exports = function(req, res) {
         {
             if( err ) throw err;
 
-            if( rows[0][0].$userSN == null ) throw util.error(6);
+            if( rows[0][0].$userSN == null ) throw common.error(6);
             
             var userNames = [];
             if( rows[0][0].$ownerName != null )
