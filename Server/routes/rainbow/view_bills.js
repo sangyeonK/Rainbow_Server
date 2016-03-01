@@ -18,8 +18,7 @@ module.exports = function(req, res) {
     if( params.err !== undefined )
         return responsor( params.err, res );
     
-	var ownerType = validator.trim(params.ownerType,"'");
-    if( Constants.CONSTRAINTS.OWNER_TYPE.indexOf( ownerType ) )
+    if( Constants.CONSTRAINTS.OWNER_TYPE.indexOf( params.ownerType ) < 0 )
         return responsor( common.error(3), res );
 	
     step(
@@ -67,7 +66,7 @@ module.exports = function(req, res) {
                     var bill_OwnerType = "MINE";
                 else
                     var bill_OwnerType = "PARTNER";
-				switch(ownerType)
+				switch(params.ownerType)
 				{
 					case "MINE":
 						if( session.user_sn == rows[0][i].UserSN )

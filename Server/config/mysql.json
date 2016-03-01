@@ -1,19 +1,23 @@
 {
     "development": 
     {
-        "host" : "127.0.0.1",
-        "port" : "3306",
-        "database" : "",
-        "user" : "",
-        "password" : ""
+        "connectionLimit" : 5,
+        "host"      : "localhost",
+        "port"      : 3306,
+        "user"      : "rainbow",
+        "password"  : "1q2w3e",
+        "database"  : "rainbow",
+        "charset"   : "utf8_general_ci"
 	},
 
     "production": 
     {
-        "host" : "127.0.0.1",
-        "port" : "3306",
-        "database" : "",
-        "user" : "",
-        "password" : ""
+        "connectionLimit" : 5,
+        "host"      : "localhost",
+        "port"      : 3306,
+        "user"      : "rainbow",
+        "password"  : "1q2w3e",
+        "database"  : "rainbow",
+        "charset"   : "utf8_general_ci"
 	}
 }

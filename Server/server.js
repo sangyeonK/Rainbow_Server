@@ -9,15 +9,18 @@ var configure = require('./common/configure.js');
 
 var app = express();
 
-mkdirp('./logs', function(err) { 
+mkdirp('./logs', function(err) { });
 
 
-});
 
-app.use(compression());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(compression());
 
+//----- load config ----- //
+
+configure.loadConfig("mysql","mysql.json");
+app.set('port', port);
 
 //----- api route list ----- //
 app.get('/rainbow/join', require( './routes/rainbow/join.js' ) );
@@ -39,8 +42,18 @@ app.get('/rainbow/view_bills_range', require( './routes/rainbow/view_bills_range
 app.post('/rainbow/view_bills_range', require( './routes/rainbow/view_bills_range.js' ) );
 //----- api route list ----- //
 
-configure.loadConfig("mysql","mysql.json");
+function boot() {
+    app.listen(app.get('port'), function(){
+        console.info('[' + configure.env + ']Express server listening on port ' + app.get('port'));
+    });
+}
 
-app.listen(port, function () {
-  console.log('[' + configure.env + '] server start');
-});
+if (require.main === module) {
+    boot();
+}
+else {
+    console.info('[' + configure.env + ']Running app as a module');
+    
+    module.exports.boot = boot;
+    module.exports.port = app.get('port');
+}

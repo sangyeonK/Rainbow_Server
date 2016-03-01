@@ -2,15 +2,9 @@ var mysql = require( 'mysql' );
 var util = require('util');
 var logger = require( './logger.js' );
 var responsor = require('./responsor.js');
+var configure = require('./configure.js');
 
-var connectionPool = mysql.createPool({
-  connectionLimit : 5,
-  host      : 'localhost',
-  user      : 'rainbow',
-  password  : '1q2w3e',
-  database  : 'rainbow',
-  charset   : 'utf8_general_ci'
-});
+var connectionPool = mysql.createPool( configure.get("mysql") );
 
 module.exports.getConnection = function( callback ) {
 
