@@ -1,4 +1,15 @@
 {
+    "test": 
+    {
+        "connectionLimit" : 5,
+        "host"      : "localhost",
+        "port"      : 3306,
+        "user"      : "rainbow",
+        "password"  : "1q2w3e",
+        "database"  : "rainbow",
+        "charset"   : "utf8_general_ci"
+	},
+    
     "development": 
     {
         "connectionLimit" : 5,

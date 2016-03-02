@@ -5,21 +5,20 @@ var winston = require('winston');
 var bodyParser = require('body-parser');
 var compression = require('compression');
 var express = require('express');
+
 var configure = require('./common/configure.js');
+var responsor = require('./common/responsor.js');
+
 
 var app = express();
 
 mkdirp('./logs', function(err) { });
 
-
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(compression());
 
-//----- load config ----- //
 
-configure.loadConfig("mysql","mysql.json");
 app.set('port', port);
 
 //----- api route list ----- //
@@ -41,6 +40,12 @@ app.post('/rainbow/view_bills', require( './routes/rainbow/view_bills.js' ) );
 app.get('/rainbow/view_bills_range', require( './routes/rainbow/view_bills_range.js' ) );
 app.post('/rainbow/view_bills_range', require( './routes/rainbow/view_bills_range.js' ) );
 //----- api route list ----- //
+
+
+
+app.use(function(err, req, res, next) {
+    responsor(err,res);
+});
 
 function boot() {
     app.listen(app.get('port'), function(){

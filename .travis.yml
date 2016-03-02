@@ -2,7 +2,8 @@ language: node_js
 node_js: "5"
 services: mysql
 script: 
+  - export NODE_ENV=test
   - cd Server
   - npm install
+  - node server &
   - mocha test
-  

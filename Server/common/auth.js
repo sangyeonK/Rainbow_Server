@@ -1,15 +1,16 @@
 var crypto = require('crypto');
 var serialize = require('node-serialize');
+var configure = require('./configure.js');
 
-var password = 'QA4F4UnzKGEfUghW4nJ7U7CcaKuUNd7x';
+var baseKey = configure.get("server").sessionBaseKe;
 
 module.exports.encrypt = function (obj) {
     var m = crypto.createHash('md5');
-    m.update(password);
+    m.update(baseKey);
     var key = m.digest('hex');
 
     m = crypto.createHash('md5');
-    m.update(password + key);
+    m.update(baseKey + key);
     var iv = m.digest('hex');
 
     var input = serialize.serialize(obj);
@@ -33,14 +34,14 @@ module.exports.decrypt = function (input) {
     // Convert from base64 to binary string
     var edata = new Buffer(input, 'base64').toString('binary')
 
-    // Create key from password
+    // Create key from baseKey
     var m = crypto.createHash('md5');
-    m.update(password);
+    m.update(baseKey);
     var key = m.digest('hex');
 
-    // Create iv from password and key
+    // Create iv from baseKey and key
     m = crypto.createHash('md5');
-    m.update(password + key );
+    m.update(baseKey + key );
     var iv = m.digest('hex');
 
     // Decipher encrypted data

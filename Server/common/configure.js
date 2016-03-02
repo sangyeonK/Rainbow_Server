@@ -6,6 +6,9 @@ var basePath = path.dirname(require.main.filename);
 this.env = process.env.NODE_ENV || 'development';
 this.settings = {};
 
+
+
+
 module.exports.get = function (setting) {
     return this.settings[setting];
 };
@@ -28,3 +31,14 @@ module.exports.loadConfig = function(key, val) {
   
   this.set(key, val[this.env]);
 };
+
+function loadConfig( key, val ) {
+  val = require("../config/" + val);
+  
+  this.set(key, val[this.env]);    
+};
+
+console.log(this);
+console.log(module.exports);
+loadConfig.call(module.exports,"mysql","mysql.json");
+loadConfig.call(module.exports,"server","server.json");
