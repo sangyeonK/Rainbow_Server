@@ -4,5 +4,5 @@ services: mysql
 script: 
   - cd Server
   - npm install
-  - node server.js &
+  - mocha test
   
