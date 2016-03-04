@@ -1,16 +1,68 @@
-var port = require('../server').port,
+var port = require('../../server').port,
     superagent = require('superagent'),
     expect = require('expect.js');
     
-describe('server', function() {
-    describe('homepage', function() {
-        it('should respond to GET',function(done){
-            superagent
-            .get('http://localhost:'+port)
-            .end(function(res){
-                expect(res.status).to.equal(404);
-                done();
-            });
-        });
+describe('JOIN API TEST', function() {
+    var url = 'http://localhost:'+port+'/rainbow/join';
+    /*
+    it('should join succeed',function(done){
+        superagent
+        .post(url)
+        .send({ 'userId':'testA@example.com','userName':'테스트','password':'123qwe' })
+        .end(function(err,res){
+            expect(res.status).to.equal(200);
+            done();
+        })            
+    });
+    */
+    it('should join failed ( invalid email address )',function(done){
+        superagent
+        .post(url)
+        .send({ 'userId':'testAexample.com','userName':'테스트','password':'123qwe' })
+        .end(function(err,res){
+            expect(res.status).to.equal(500);
+            expect(res.body.errorCode).to.equal(10);
+            done();
+        })            
+    });
+    it('should join failed ( invalid password #1 - not alphabet )',function(done){
+        superagent
+        .post(url)
+        .send({ 'userId':'testA@example.com','userName':'테스트','password':'123123123' })
+        .end(function(err,res){
+            expect(res.status).to.equal(500);
+            expect(res.body.errorCode).to.equal(11);
+            done();
+        })            
+    });
+    it('should join failed ( invalid password #2 - not numberic )',function(done){
+        superagent
+        .post(url)
+        .send({ 'userId':'testA@example.com','userName':'테스트','password':'qweasd' })
+        .end(function(err,res){
+            expect(res.status).to.equal(500);
+            expect(res.body.errorCode).to.equal(11);
+            done();
+        })            
+    });
+    it('should join failed ( invalid password #3 - below 6 characters )',function(done){
+        superagent
+        .post(url)
+        .send({ 'userId':'testA@example.com','userName':'테스트','password':'1q2w' })
+        .end(function(err,res){
+            expect(res.status).to.equal(500);
+            expect(res.body.errorCode).to.equal(11);
+            done();
+        })            
+    });
+    it('should join failed ( alreadyJoined )',function(done){
+        superagent
+        .post(url)
+        .send({ 'userId':'testA@example.com','userName':'테스트','password':'123qwe' })
+        .end(function(err,res){
+            expect(res.status).to.equal(500);
+            expect(res.body.errorCode).to.equal(4);
+            done();
+        })            
     });
 });
