@@ -6,39 +6,27 @@ var basePath = path.dirname(require.main.filename);
 this.env = process.env.NODE_ENV || 'development';
 this.settings = {};
 
+module.exports.get = function ( key ) {
+    return this.settings[key];
+}
 
-
-
-module.exports.get = function (setting) {
-    return this.settings[setting];
-};
-
-module.exports.set = function (setting, val) {
-    
+module.exports.set = function ( key, val ) {
     if (arguments.length === 1)
     {
-        return this.settings[setting];
+        return this.settings[key];
     }
   
-    this.settings[setting] = val;
+    this.settings[key] = val;
   
     return this;
-};
-
-module.exports.loadConfig = function(key, val) {
-
-  val = require("../config/" + val);
-  
-  this.set(key, val[this.env]);
-};
+}
 
 function loadConfig( key, val ) {
   val = require("../config/" + val);
   
   this.set(key, val[this.env]);    
-};
+}
 
-console.log(this);
-console.log(module.exports);
-loadConfig.call(module.exports,"mysql","mysql.json");
-loadConfig.call(module.exports,"server","server.json");
+
+loadConfig.call(this, "mysql", "mysql.json");
+loadConfig.call(this, "server", "server.json");

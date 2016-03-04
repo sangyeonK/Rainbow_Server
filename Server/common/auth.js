@@ -2,7 +2,7 @@ var crypto = require('crypto');
 var serialize = require('node-serialize');
 var configure = require('./configure.js');
 
-var baseKey = configure.get("server").sessionBaseKe;
+var baseKey = configure.get("server").sessionBaseKey;
 
 module.exports.encrypt = function (obj) {
     var m = crypto.createHash('md5');
