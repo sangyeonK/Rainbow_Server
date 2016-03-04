@@ -8,8 +8,7 @@ function makeResponse( errorCode, errorMessage, result )
 	}
 	else
 	{
-		return {errorCode : errorCode , 
-             errorMessage : errorMessage};
+		return { errorCode : errorCode , errorMessage : errorMessage };
 	}
 };
 
@@ -17,19 +16,20 @@ module.exports = function( err, res, result )
 {
     if( err )
     {
-        if( err.errno !== undefined )
+        if( err.errno !== undefined )   //DATABASE ERROR
         {
-            res.status(500).send( makeResponse(1,common.getErrorMessage(1),undefined) );
+            err.code = 1;
         }
-        else
+        else if( err.code === undefined )   //uncaughted exception ERROR
         {
-            res.status(500).send( makeResponse(err.code,err.message,undefined) );
+            err.code = 999;
         }
-        logger.error( err.message, {URL:res.req.url, TOKEN:res.req.headers.token, BODY:res.req.body, ERRORNO:( err.errno !== undefined ? "1" : err.code )});
+        res.status(500).send( makeResponse(err.code, common.getErrorMessage( err.code ) ) );
+        logger.error( err.message, {URL:res.req.url, TOKEN:res.req.headers.token, BODY:res.req.body, ERRORNO: err.code, STACK:err.stack });
     }
     else
     {
-        logger.debug( '', {URL:res.req.url, TOKEN:res.req.headers.token, BODY:res.req.body, RESULT:JSON.stringify(result)});
         res.send( makeResponse(undefined,undefined,result) );
+        logger.debug( '', {URL:res.req.url, TOKEN:res.req.headers.token, BODY:res.req.body, RESULT:JSON.stringify(result)});
     }
 };
