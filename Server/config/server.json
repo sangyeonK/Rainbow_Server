@@ -1,0 +1,19 @@
+{
+    "test": 
+    {
+        "port" : 3001,
+        "sessionBaseKey" : "1234567890abcdefhijklmnopqrstuvw"
+	},
+    
+    "development": 
+    {
+        "port" : 80,
+        "sessionBaseKey" : "1234567890abcdefhijklmnopqrstuvw"
+	},
+
+    "production": 
+    {
+        "port" : 80,
+        "sessionBaseKey" : "1234567890abcdefhijklmnopqrstuvw"
+	}
+}
