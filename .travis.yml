@@ -1,15 +1,15 @@
 language: node_js
 node_js: "5"
-sudo: required
 before_script:
   - mysql -e 'create database rainbow;'
   - mysql -e 'source ./Server/schema/Rainbow_Server_Table.sql' rainbow
   - mysql -e 'source ./Server/schema/Rainbow_Server_Routine.sql' rainbow
 script: 
-  - export NODE_ENV=test
   - cd Server
   - npm install
-  - node server &
+  - node server & > output.txt
   - mocha test/api
+env:
+  - NODE_ENV=test
 addons:
   mariadb: '10.1'

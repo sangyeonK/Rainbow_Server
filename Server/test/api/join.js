@@ -2,16 +2,14 @@ var port = require('../../server').port,
     superagent = require('superagent'),
     expect = require('expect.js');
     
-describe('JOIN API TEST', function() {
-    
+describe('JOIN API TEST', function() {    
     var url = 'http://localhost:'+port+'/rainbow/join';
-    var testID = 'test@test.com';
-    
+    var testID = 'join@test.com';
 
     it('should join failed ( invalid email address )',function(done){
         superagent
         .post(url)
-        .send({ 'userId':'testtest.com','userName':'테스트','password':'123qwe' })
+        .send({ 'userId':'jointest.com','userName':'테스트','password':'123qwe' })
         .end(function(err,res){
             expect(res.status).to.equal(500);
             expect(res.body.errorCode).to.equal(10);
