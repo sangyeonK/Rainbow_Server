@@ -6,8 +6,7 @@
         "port"      : 3306,
         "user"      : "root",
         "password"  : "",
-        "database"  : "rainbow",
-        "charset"   : "utf8_unicode_ci"
+        "database"  : "rainbow"
 	},
     
     "development": 
@@ -17,8 +16,7 @@
         "port"      : 3306,
         "user"      : "rainbow",
         "password"  : "1q2w3e",
-        "database"  : "rainbow",
-        "charset"   : "utf8_unicode_ci"
+        "database"  : "rainbow"
 	},
 
     "production": 
@@ -28,7 +26,6 @@
         "port"      : 3306,
         "user"      : "rainbow",
         "password"  : "1q2w3e",
-        "database"  : "rainbow",
-        "charset"   : "utf8_unicode_ci"
+        "database"  : "rainbow"
 	}
 }
