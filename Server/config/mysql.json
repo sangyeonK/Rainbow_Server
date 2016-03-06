@@ -7,7 +7,7 @@
         "user"      : "root",
         "password"  : "",
         "database"  : "rainbow",
-        "charset"   : "utf8_general_ci"
+        "charset"   : "utf8_unicode_ci"
 	},
     
     "development": 
@@ -18,7 +18,7 @@
         "user"      : "rainbow",
         "password"  : "1q2w3e",
         "database"  : "rainbow",
-        "charset"   : "utf8_general_ci"
+        "charset"   : "utf8_unicode_ci"
 	},
 
     "production": 
@@ -29,6 +29,6 @@
         "user"      : "rainbow",
         "password"  : "1q2w3e",
         "database"  : "rainbow",
-        "charset"   : "utf8_general_ci"
+        "charset"   : "utf8_unicode_ci"
 	}
 }
