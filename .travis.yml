@@ -6,4 +6,4 @@ script:
   - cd Server
   - npm install
   - node server &
-  - mocha test
+  - mocha test/api
