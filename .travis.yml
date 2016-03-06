@@ -1,6 +1,10 @@
 language: node_js
 node_js: "5"
 services: mysql
+before_script:
+  - mysql -e 'create database rainbow;'
+  - mysql -e 'source ./schema/Rainbow_Server_Table.sql' rainbow
+  - mysql -e 'source ./schema/Rainbow_Server_Routine.sql' rainbow
 script: 
   - export NODE_ENV=test
   - cd Server
