@@ -4,59 +4,38 @@ var configure = require('./configure.js');
 
 var baseKey = configure.get("server").sessionBaseKey;
 
+var key = crypto.createHash('md5').update(baseKey).digest('hex');
+var iv = crypto.createHash('md5').update(baseKey + key).digest('hex').slice(0,16);
+
+function generateKey(size) {
+  return crypto.randomBytes(size);
+}
+
 module.exports.encrypt = function (obj) {
-    var m = crypto.createHash('md5');
-    m.update(baseKey);
-    var key = m.digest('hex');
+  var data = new Buffer(serialize.serialize(obj), 'utf8');
+  var cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+  var encodedBuff = Buffer.concat([cipher.update(data),cipher.final()]);
+  var encodedText = encodedBuff.toString('base64');
+  // Convert normal base64 to urlsafe base64
+  var encodedText = encodedText.replace(/\+/g, '-').replace(/\//g, '_');
 
-    m = crypto.createHash('md5');
-    m.update(baseKey + key);
-    var iv = m.digest('hex');
-
-    var input = serialize.serialize(obj);
-    
-    var data = new Buffer(input, 'utf8').toString('binary');
-
-    var cipher = crypto.createCipheriv('aes-256-cbc', key, iv.slice(0,16));
-
-    var encrypted = cipher.update(data, 'utf8', 'binary') + cipher.final('binary');
-    
-    var encoded = new Buffer(encrypted, 'binary').toString('base64');
-    // Convert normal base64 to urlsafe base64
-    var encoded = encoded.replace(/\+/g, '-').replace(/\//g, '_');
-    
-    return encoded;
+  return encodedText;
 };
 
-module.exports.decrypt = function (input) {
-    // Convert urlsafe base64 to normal base64
-    var input = input.replace(/\-/g, '+').replace(/_/g, '/');
-    // Convert from base64 to binary string
-    var edata = new Buffer(input, 'base64').toString('binary')
+module.exports.decrypt = function (text) {
+  // Convert urlsafe base64 to normal base64
+  var text = text.replace(/\-/g, '+').replace(/_/g, '/');
+  // Convert from base64 to binary string
+  var edata = new Buffer(text, 'base64');
+  // Decipher encrypted data
+  try {
+    var decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+    var decodedBuff = Buffer.concat([decipher.update(edata),decipher.final()]);
+    var decodedObj = serialize.unserialize(decodedBuff.toString('utf8'));
+  } catch (e) {
+    return undefined;
+  } finally {
+    return decodedObj;
+  }
 
-    // Create key from baseKey
-    var m = crypto.createHash('md5');
-    m.update(baseKey);
-    var key = m.digest('hex');
-
-    // Create iv from baseKey and key
-    m = crypto.createHash('md5');
-    m.update(baseKey + key );
-    var iv = m.digest('hex');
-
-    // Decipher encrypted data
-    try
-    {
-        var decipher = crypto.createDecipheriv('aes-256-cbc', key, iv.slice(0,16));
-
-        var plaintext = (decipher.update(edata, 'binary', 'utf8') + decipher.final('utf8'));
-
-        var decoded = serialize.unserialize(plaintext);
-    }
-    catch(ex)
-    {
-        return undefined;
-    }
-    
-    return decoded;
 };

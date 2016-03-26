@@ -1,8 +1,6 @@
 var path = require('path');
 var Constants = require('./constants.js');
 
-var basePath = path.dirname(require.main.filename);
-
 this.env = process.env.NODE_ENV || 'development';
 this.settings = {};
 
@@ -15,16 +13,16 @@ module.exports.set = function ( key, val ) {
     {
         return this.settings[key];
     }
-  
+
     this.settings[key] = val;
-  
+
     return this;
 }
 
 function loadConfig( key, val ) {
   val = require("../config/" + val);
-  
-  this.set(key, val[this.env]);    
+
+  this.set(key, val[this.env]);
 }
 
 
