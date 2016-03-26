@@ -8,17 +8,20 @@ describe('JOIN GROUP TEST', function() {
   var join_url = 'http://localhost:'+port+'/rainbow/join';
   var login_url = 'http://localhost:'+port+'/rainbow/login';
   var join_group_url = 'http://localhost:'+port+'/rainbow/join_group';
+  var user1_ID = 'joingroup_1@test.com';
+  var user2_ID = 'joingroup_2@test.com';
+  var user3_ID = 'joingroup_3@test.com';
 
   var user1 = new user();
-  user1.userId = 'joingroup_1@test.com';
+  user1.userId = user1_ID;
   user1.userName = "test1";
 
   var user2 = new user();
-  user2.userId = 'joingroup_2@test.com';
+  user2.userId = user2_ID;
   user2.userName = "test2";
 
   var user3 = new user();
-  user3.userId = 'joingroup_3@test.com';
+  user3.userId = user3_ID;
   user3.userName = "test3";
 
   it('user1 join',function(done){
@@ -131,17 +134,19 @@ describe('JOIN GROUP TEST', function() {
   });
 
   afterAll(function(done) {
-    mysql.getConnection( function (err, conn )
-    {
+    mysql.getConnection( function (err, conn ) {
       if( err ) throw err;
-      var q1 = mysql.makeQuery("delete from Account where UserID in (%s,%s,%s)", user1.userId, user2.userId, user3.userId );
+      var q1 = mysql.makeQuery( 'call spClearTestUserData(%s)', user1_ID );
       conn.query( q1, function ( err ) {
         if( err ) throw err;
-        var q2 = mysql.makeQuery("delete from `Group` where GroupSN in (%d,%d,%d)", user1.group.sn, user2.group.sn, user3.group.sn );
-        conn.query( q2 , function ( err ) {
+        var q2 = mysql.makeQuery( 'call spClearTestUserData(%s)', user2_ID );
+        conn.query( q2, function ( err ) {
           if( err ) throw err;
-          conn.release();
-          done();
+          var q3 = mysql.makeQuery( 'call spClearTestUserData(%s)', user3_ID );
+          conn.query( q3, function ( err ) {
+            if( err ) throw err;
+            done();
+          });
         });
       });
     });

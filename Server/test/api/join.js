@@ -6,9 +6,10 @@ var port = require('../../server').port,
 
 describe('JOIN API TEST', function() {
   var url = 'http://localhost:'+port+'/rainbow/join';
+  var user1_ID = "join@test.com";
 
   var user1 = new user();
-  user1.userId = "join@test.com";
+  user1.userId = user1_ID;
   user1.userName = "test";
 
   it('should join failed ( invalid email address )',function(done){
@@ -79,18 +80,12 @@ describe('JOIN API TEST', function() {
   });
 
   afterAll(function(done) {
-    mysql.getConnection( function (err, conn )
-    {
+    mysql.getConnection( function (err, conn ) {
       if( err ) throw err;
-      var q1 = mysql.makeQuery("delete from Account where UserID in (%s)", user1.userId );
+      var q1 = mysql.makeQuery( 'call spClearTestUserData(%s)', user1_ID );
       conn.query( q1, function ( err ) {
         if( err ) throw err;
-        var q2 = mysql.makeQuery("delete from `Group` where GroupSN in (%d)", user1.group.sn );
-        conn.query( q2 , function ( err ) {
-          if( err ) throw err;
-          conn.release();
-          done();
-        });
+        done();
       });
     });
   });

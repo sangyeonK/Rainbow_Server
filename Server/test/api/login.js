@@ -7,9 +7,10 @@ var port = require('../../server').port,
 describe('LOGIN API TEST', function() {
   var join_url = 'http://localhost:'+port+'/rainbow/join';
   var login_url = 'http://localhost:'+port+'/rainbow/login';
+  var user1_ID = "login@test.com";
 
   var user1 = new user();
-  user1.userId = "login@test.com";
+  user1.userId = user1_ID;
   user1.userName = "test";
 
   it('join succeed',function(done){
@@ -59,18 +60,13 @@ describe('LOGIN API TEST', function() {
     })
   });
 
-  afterAll( function(done) {
+  afterAll(function(done) {
     mysql.getConnection( function (err, conn ) {
       if( err ) throw err;
-      var q1 = mysql.makeQuery("delete from Account where UserID in (%s)", user1.userId );
+      var q1 = mysql.makeQuery( 'call spClearTestUserData(%s)', user1_ID );
       conn.query( q1, function ( err ) {
         if( err ) throw err;
-        var q2 = mysql.makeQuery("delete from `Group` where GroupSN in (%d)", user1.group.sn );
-        conn.query( q2 , function ( err ) {
-          if( err ) throw err;
-          conn.release();
-          done();
-        });
+        done();
       });
     });
   });
