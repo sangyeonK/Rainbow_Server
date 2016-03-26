@@ -4,11 +4,11 @@ before_script:
   - mysql -e 'create database rainbow;'
   - mysql -e 'source ./Server/schema/Rainbow_Server_Table.sql' rainbow
   - mysql -e 'source ./Server/schema/Rainbow_Server_Routine.sql' rainbow
-script: 
+script:
   - cd Server
   - npm install
   - node server & > output.txt
-  - mocha test/api
+  - npm run test
 env:
   - NODE_ENV=test
 addons:

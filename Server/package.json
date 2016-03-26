@@ -4,7 +4,7 @@
   "description": "rainbow server api",
   "author": "sangyeonK <konasona@gmail.com>",
   "scripts": {
-    "test": "vows --spec --isolate",
+    "test": "node ./test/run.js",
     "start": "node server.js"
   },
   "repository": {
@@ -24,8 +24,7 @@
     "winston": "^2.1.1"
   },
   "devDependencies": {
-    "expect.js": "^0.3.1",
-    "mocha": "^2.4.5",
+    "jasmine": "^2.4.1",
     "superagent": "^1.7.2"
   },
   "private": true,
