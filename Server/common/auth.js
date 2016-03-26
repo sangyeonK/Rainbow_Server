@@ -2,10 +2,11 @@ var crypto = require('crypto');
 var serialize = require('node-serialize');
 var configure = require('./configure.js');
 
-var baseKey = configure.get("server").sessionBaseKey;
+var sessionBaseKey = configure.get("server").sessionBaseKey;
+var passwordSecretKey = configure.get("server").passwordSecretKey;
 
-var key = crypto.createHash('md5').update(baseKey).digest('hex');
-var iv = crypto.createHash('md5').update(baseKey + key).digest('hex').slice(0,16);
+var key = crypto.createHash('md5').update(sessionBaseKey).digest('hex');
+var iv = crypto.createHash('md5').update(sessionBaseKey + key).digest('hex').slice(0,16);
 
 function generateKey(size) {
   return crypto.randomBytes(size);
@@ -37,5 +38,9 @@ module.exports.decrypt = function (text) {
   } finally {
     return decodedObj;
   }
-
 };
+
+module.exports.encryptPasswd = function(text){
+  const hmac = crypto.createHmac('sha512', passwordSecretKey);
+  return hmac.update(text).digest('hex');
+}
