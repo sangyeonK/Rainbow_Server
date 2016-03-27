@@ -5,18 +5,17 @@ this.env = process.env.NODE_ENV || 'development';
 this.settings = {};
 
 module.exports.get = function ( key ) {
-    return this.settings[key];
+  return this.settings[key];
 }
 
 module.exports.set = function ( key, val ) {
-    if (arguments.length === 1)
-    {
-        return this.settings[key];
-    }
+  if (arguments.length === 1) {
+    return this.settings[key];
+  }
 
-    this.settings[key] = val;
+  this.settings[key] = val;
 
-    return this;
+  return this;
 }
 
 function loadConfig( key, val ) {

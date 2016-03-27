@@ -40,7 +40,7 @@ module.exports.decrypt = function (text) {
   }
 };
 
-module.exports.encryptPasswd = function(text){
+module.exports.encryptPasswd = function(text) {
   const hmac = crypto.createHmac('sha512', passwordSecretKey);
   return hmac.update(text).digest('hex');
 }

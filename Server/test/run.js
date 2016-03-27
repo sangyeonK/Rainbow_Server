@@ -6,6 +6,6 @@ jasmine.loadConfig({
   spec_files:[
     'api/**/*.js'
   ]
-})
+});
 
 jasmine.execute();

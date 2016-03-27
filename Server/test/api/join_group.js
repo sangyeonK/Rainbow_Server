@@ -5,9 +5,9 @@ var port = require('../../server').port,
   user = require('../helper/user.js');
 
 describe('JOIN GROUP TEST', function() {
-  var join_url = 'http://localhost:'+port+'/rainbow/join';
-  var login_url = 'http://localhost:'+port+'/rainbow/login';
-  var join_group_url = 'http://localhost:'+port+'/rainbow/join_group';
+  var join_url = 'http://localhost:' + port + '/rainbow/join';
+  var login_url = 'http://localhost:' + port + '/rainbow/login';
+  var join_group_url = 'http://localhost:' + port + '/rainbow/join_group';
   var user1_ID = 'joingroup_1@test.com';
   var user2_ID = 'joingroup_2@test.com';
   var user3_ID = 'joingroup_3@test.com';
@@ -24,11 +24,11 @@ describe('JOIN GROUP TEST', function() {
   user3.userId = user3_ID;
   user3.userName = "test3";
 
-  it('user1 join',function(done){
+  it('user1 join',function(done) {
     superagent
     .post(join_url)
     .send({ 'userId':user1.userId,'userName':user1.userName,'password':'123qwe' })
-    .end(function(err,res){
+    .end(function(err,res) {
       expect(res.status).toEqual(200);
       user1.loadJSON( res.body );
       expect(user1.validate()).toEqual(true);
@@ -36,11 +36,11 @@ describe('JOIN GROUP TEST', function() {
     });
   });
 
-  it('user2 join',function(done){
+  it('user2 join',function(done) {
     superagent
     .post(join_url)
     .send({ 'userId':user2.userId,'userName':user2.userName,'password':'223qwe' })
-    .end(function(err,res){
+    .end(function(err,res) {
       expect(res.status).toEqual(200);
       user2.loadJSON( res.body );
       expect(user2.validate()).toEqual(true);
@@ -48,11 +48,11 @@ describe('JOIN GROUP TEST', function() {
     });
   });
 
-  it('user3 join',function(done){
+  it('user3 join',function(done) {
     superagent
     .post(join_url)
     .send({ 'userId':user3.userId,'userName':user3.userName,'password':'323qwe' })
-    .end(function(err,res){
+    .end(function(err,res) {
       expect(res.status).toEqual(200);
       user3.loadJSON( res.body );
       expect(user3.validate()).toEqual(true);
@@ -60,12 +60,12 @@ describe('JOIN GROUP TEST', function() {
     });
   });
 
-  it( 'user1 join to the user2 group', function(done){
+  it( 'user1 join to the user2 group', function(done) {
     superagent
     .post(join_group_url)
     .set({ 'token':user1.token })
     .send({'invite_code':user2.group.inviteCode})
-    .end(function(err,res){
+    .end(function(err,res) {
       expect(res.status).toEqual(200);
       user1.loadJSON( res.body );
       expect(user1.validate()).toEqual(true);
@@ -73,61 +73,61 @@ describe('JOIN GROUP TEST', function() {
     });
   });
 
-  it( 'equal user1 and user2 group', function(){
+  it( 'equal user1 and user2 group', function() {
     expect(user1.group.sn).toEqual(user2.group.sn);
   });
 
 
-  it( 'user1 cannot duplicate join to the user2 group ', function(done){
+  it( 'user1 cannot duplicate join to the user2 group ', function(done) {
     superagent
     .post(join_group_url)
     .set({ 'token':user1.token })
     .send({'invite_code':user2.group.inviteCode})
-    .end(function(err,res){
+    .end(function(err,res) {
       expect(res.status).toEqual(500);
       done();
     });
   });
 
-  it( 'user3 cannot join to the user1 group', function(done){
+  it( 'user3 cannot join to the user1 group', function(done) {
     superagent
     .post(join_group_url)
     .set({ 'token':user3.token })
     .send({'invite_code':user1.group.inviteCode})
-    .end(function(err,res){
+    .end(function(err,res) {
       expect(res.status).toEqual(500);
       done();
     });
   });
 
-  it( 'user3 cannot join to the user2 group', function(done){
+  it( 'user3 cannot join to the user2 group', function(done) {
     superagent
     .post(join_group_url)
     .set({ 'token':user3.token })
     .send({'invite_code':user2.group.inviteCode})
-    .end(function(err,res){
+    .end(function(err,res) {
       expect(res.status).toEqual(500);
       done();
     });
   });
 
-  it( 'user1 cannot join to the user3 group', function(done){
+  it( 'user1 cannot join to the user3 group', function(done) {
     superagent
     .post(join_group_url)
     .set({ 'token':user1.token })
     .send({'invite_code':user3.group.inviteCode})
-    .end(function(err,res){
+    .end(function(err,res) {
       expect(res.status).toEqual(500);
       done();
     });
   });
 
-  it( 'user2 cannot join to the user3 group', function(done){
+  it( 'user2 cannot join to the user3 group', function(done) {
     superagent
     .post(join_group_url)
     .set({ 'token':user2.token })
     .send({'invite_code':user3.group.inviteCode})
-    .end(function(err,res){
+    .end(function(err,res) {
       expect(res.status).toEqual(500);
       done();
     });

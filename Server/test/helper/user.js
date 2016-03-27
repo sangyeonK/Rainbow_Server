@@ -5,9 +5,8 @@ module.exports = function() {
         this.userName = json.userName;
         this.group = json.group;
     }
-        
-    this.validate = function()
-    {
+
+    this.validate = function() {
         if( this.userId !== undefined &&
             this.userName !== undefined &&
             this.token !== undefined &&
