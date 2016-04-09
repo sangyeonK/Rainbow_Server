@@ -37,9 +37,15 @@ app.post('/rainbow/view_bills', require( './routes/rainbow/view_bills.js' ) );
 
 app.get('/rainbow/view_bills_range', require( './routes/rainbow/view_bills_range.js' ) );
 app.post('/rainbow/view_bills_range', require( './routes/rainbow/view_bills_range.js' ) );
+
+app.get('/rainbow/statistics_bills', require( './routes/rainbow/statistics_bills.js' ) );
+app.post('/rainbow/statistics_bills', require( './routes/rainbow/statistics_bills.js' ) );
+
+app.get('/rainbow/statistics_bills_range', require( './routes/rainbow/statistics_bills_range.js' ) );
+app.post('/rainbow/statistics_bills_range', require( './routes/rainbow/statistics_bills_range.js' ) );
 //----- api route list ----- //
 
-function boot() {  
+function boot() {
     app.listen(app.get('port'), function() {
         console.info('[' + configure.env + ']Express server listening on port ' + app.get('port'));
     });
