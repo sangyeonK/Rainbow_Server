@@ -11,5 +11,5 @@ script:
   - npm run test
 env:
   - NODE_ENV=test
-services:
-  - mysql
+addons:
+  mariadb: '10.0'
