@@ -1,4 +1,5 @@
 ## Rainbow_Server
+[![Build Status](https://travis-ci.org/sangyeonK/Rainbow_Server.svg?branch=master)](https://travis-ci.org/sangyeonK/Rainbow_Server)
 
 Rainbow_Server 는 두툼-커플가계부(https://github.com/Nexters/Rainbow/) 의 네트워크 API 기능을 제공하는 어플리케이션 입니다.
 
@@ -9,20 +10,20 @@ Rainbow_Server 는 두툼-커플가계부(https://github.com/Nexters/Rainbow/) �
 * mysql or mariadb
 * git
 
-설치 
+설치
 ================
 ( 사용자의 HOME 경로를 기준으로 설명합니다. )
 ### 소스 다운로드
 
-    $ cd ~ 
+    $ cd ~
     $ git clone https://github.com/sangyeonK/Rainbow_Server
-  
-    
+
+
 ### npm package 설치
 
     $ cd ~/Rainbow_Server/Server
     $ npm install
-    
+
 ### Database 생성
 
 Database 생성 쿼리파일은 `Server/schema/` 에 위치하고 있습니다.
@@ -79,5 +80,5 @@ OS의 NODE_ENV 변수에 따른 설정값을 사용합니다.( 지정한 값이 
 ================
 
     $ cd ~/Rainbow_Server/Server && npm test
-    
+
 * 테스트 시 Database에 데이터를 기록하고 삭제하는 과정이 포함되어 있습니다. 개발환경 에서만 사용해 주십시오.
