@@ -1,6 +1,5 @@
 #요청(Request) 형태
 
-URL Domain :  http://52.68.153.226
 HTTP Method : GET, POST
 
 #응답(response) 형태
