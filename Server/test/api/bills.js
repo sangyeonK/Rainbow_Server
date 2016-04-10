@@ -10,6 +10,8 @@ describe('bills test', function() {
   var insert_bill_url = 'http://localhost:' + port + '/rainbow/insert_bill';
   var view_bills_url = 'http://localhost:' + port + '/rainbow/view_bills';
   var view_bills_range_url = 'http://localhost:' + port + '/rainbow/view_bills_range';
+  var statistics_bills_url = 'http://localhost:' + port + '/rainbow/statistics_bills';
+  var statistics_bills_range_url = 'http://localhost:' + port + '/rainbow/statistics_bills_range';
 
   var user1_ID = 'billtester_1@test.com';
   var user2_ID = 'billtester_2@test.com';
@@ -68,10 +70,10 @@ describe('bills test', function() {
       var doneCnt = 0;
       for(var i=0; i < 40; i++) {
         var sendData;
-        if( i < 10 ) sendData = {year:2015,month:12,day:31,category:"test",amount:5000,comment:"test"};
-        else if( i < 20 ) sendData = {year:2016,month:1,day:1,category:"test",amount:5000,comment:"test"};
-        else if( i < 30 ) sendData = {year:2016,month:2,day:1,category:"test",amount:5000,comment:"test"};
-        else if( i < 40 ) sendData = {year:2016,month:2,day:15,category:"test",amount:5000,comment:"test"};
+        if( i < 10 ) sendData = {year:2015,month:12,day:31,category:"test1",amount:1000,comment:"test"};
+        else if( i < 20 ) sendData = {year:2016,month:1,day:1,category:"test2",amount:2000,comment:"test"};
+        else if( i < 30 ) sendData = {year:2016,month:2,day:1,category:"test3",amount:3000,comment:"test"};
+        else if( i < 40 ) sendData = {year:2016,month:2,day:15,category:"test4",amount:4000,comment:"test"};
         superagent
         .post(insert_bill_url)
         .set({ 'token':user1.token })
@@ -88,10 +90,10 @@ describe('bills test', function() {
       var doneCnt = 0;
       for(var i=0; i < 60; i++) {
         var sendData;
-        if( i < 15 ) sendData = {year:2015,month:12,day:31,category:"test",amount:5000,comment:"test"};
-        else if( i < 30 ) sendData = {year:2016,month:1,day:2,category:"test",amount:5000,comment:"test"};
-        else if( i < 45 ) sendData = {year:2016,month:2,day:1,category:"test",amount:5000,comment:"test"};
-        else if( i < 60 ) sendData = {year:2016,month:2,day:16,category:"test",amount:5000,comment:"test"};
+        if( i < 15 ) sendData = {year:2015,month:12,day:31,category:"test1",amount:1000,comment:"test"};
+        else if( i < 30 ) sendData = {year:2016,month:1,day:2,category:"test2",amount:2000,comment:"test"};
+        else if( i < 45 ) sendData = {year:2016,month:2,day:1,category:"test3",amount:3000,comment:"test"};
+        else if( i < 60 ) sendData = {year:2016,month:2,day:16,category:"test4",amount:4000,comment:"test"};
         superagent
         .post(insert_bill_url)
         .set({ 'token':user2.token })
@@ -119,6 +121,27 @@ describe('bills test', function() {
         .end(function(err,res) {
           expect(res.status).toEqual(200);
           expect(res.body.length).toEqual(data.expectCount);
+          if(++checkedCnt == checklist.length)
+            done();
+        });
+      });
+    });
+
+    it( 'check My Statistics', function(done) {
+      var checkedCnt = 0;
+      var checklist = [ {sendData:{year:2016,ownerType:"MINE"},expectPercentage:{"test4": 44, "test3":33, "test2":22 } },
+                      {sendData:{year:2016,month:2,ownerType:"MINE"},expectPercentage:{"test4": 57, "test3":43 } },
+                      {sendData:{year:2016,month:2,day:15,ownerType:"MINE"},expectPercentage:{"test4": 100} } ];
+      checklist.forEach( function( data ) {
+        superagent
+        .post(statistics_bills_url)
+        .set({ 'token':user1.token })
+        .send(data.sendData)
+        .end(function(err,res) {
+          expect(res.status).toEqual(200);
+          Object.keys(data.expectPercentage).forEach(function (category, index) {
+            expect(res.body[index].percentage).toEqual(data.expectPercentage[category].toString());
+          });
           if(++checkedCnt == checklist.length)
             done();
         });
@@ -181,6 +204,27 @@ describe('bills test', function() {
         .end(function(err,res) {
           expect(res.status).toEqual(200);
           expect(res.body.length).toEqual(data.expectCount);
+          if(++checkedCnt == checklist.length)
+            done();
+        });
+      });
+    });
+
+    it( 'check My Statistics', function(done) {
+      var checkedCnt = 0;
+      var checklist = [ {sendData:{year:2016,ownerType:"MINE"},expectPercentage:{"test4": 44, "test3":33, "test2":22 } },
+                      {sendData:{year:2016,month:2,ownerType:"MINE"},expectPercentage:{"test4": 57, "test3":43 } },
+                      {sendData:{year:2016,month:2,day:15,ownerType:"MINE"},expectPercentage:{"test4": 100} } ];
+      checklist.forEach( function( data ) {
+        superagent
+        .post(statistics_bills_url)
+        .set({ 'token':user1.token })
+        .send(data.sendData)
+        .end(function(err,res) {
+          expect(res.status).toEqual(200);
+          Object.keys(data.expectPercentage).forEach(function (category, index) {
+            expect(res.body[index].percentage).toEqual(data.expectPercentage[category].toString());
+          });
           if(++checkedCnt == checklist.length)
             done();
         });
