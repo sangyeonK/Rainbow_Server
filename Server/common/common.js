@@ -32,7 +32,7 @@ module.exports.checkRequest = function( req, requireParams, optionalPrams ) {
   else if(req.method == "POST")
     inputParams = req.body;
 
-  if( inputParams == undefined || inputParams == false ) {
+  if( inputParams == undefined ) {
     result.err = this.error(4);
     return result;
   }
@@ -82,7 +82,7 @@ module.exports.checkRequest = function( req, requireParams, optionalPrams ) {
 module.exports.objectSize = function(obj) {
   var size = 0, key;
   for (key in obj) {
-    if (obj.hasOwnProperty(key)) size++;
+    size++;
   }
   return size;
 };

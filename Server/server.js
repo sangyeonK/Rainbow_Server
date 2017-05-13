@@ -43,6 +43,9 @@ app.post('/rainbow/statistics_bills', require( './routes/rainbow/statistics_bill
 
 app.get('/rainbow/statistics_bills_range', require( './routes/rainbow/statistics_bills_range.js' ) );
 app.post('/rainbow/statistics_bills_range', require( './routes/rainbow/statistics_bills_range.js' ) );
+
+app.get('/rainbow/total_amount_by_month', require( './routes/rainbow/total_amount_by_month.js' ) );
+app.post('/rainbow/total_amount_by_month', require( './routes/rainbow/total_amount_by_month.js' ) );
 //----- api route list ----- //
 
 function boot() {

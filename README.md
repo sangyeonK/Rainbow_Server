@@ -32,7 +32,7 @@ Database 생성 쿼리파일은 `Server/schema/` 에 위치하고 있습니다.
 `Server/schema/Rainbow_Server_Routine.sql` : 저장 프로시저 생성 쿼리문
 
 * mysql 혹은 mariaDB를 설치
-* Database에 로그인: `mysql -uUsername -pPassword`
+* Database에 로그인: `mysql -uUsername -pPassword --default-character-set=utf8`
 * Database 생성: `mysql> create database rainbow;`
 * Database 선택: `mysql> use rainbow;`
 * sql 파일 추출(테이블): `mysql> source ~/Rainbow_Server/Server/schema/Rainbow_Server_Table.sql`
